@@ -75,6 +75,7 @@ boolean is_battery_voltage_OK();
 void Analog_Range_A4();
 void GYRO_reading();
 float HC_SR04_range();
+void resetGyro();
 
 void disable_motors();
 void enable_motors();
@@ -93,7 +94,26 @@ void speed_change_smooth();
 
 //setup=============================================================================================================start
 void setup() {
-  //
+  turret_motor.attach(11);
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  // The Trigger pin will tell the sensor to range find
+  pinMode(TRIG_PIN, OUTPUT);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Setup the Serial port and pointer, the pointer allows switching the debug info through the USB port(Serial) or Bluetooth port(Serial1) with ease.
+  SerialCom = &Serial;
+  SerialCom->begin(115200);
+  SerialCom->println("MECHENG706_Base_Code_25/01/2018");
+
+  delay(1000);
+  SerialCom->println("Setup....");
+  Serial1.begin(115200);
+
+  // setting up gyro
+  resetGyro();
+
+  delay(1000); // settling time but no really needed
 }
 //setup===============================================================================================================end
 
