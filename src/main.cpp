@@ -1,29 +1,49 @@
-/*
-  MechEng 706 Base Code
-  This code provides basic movement and sensor reading for the MechEng 706 Mecanum Wheel Robot Project
-  Hardware:
-    Arduino Mega2560 https://www.arduino.cc/en/Guide/ArduinoMega2560
-    MPU-9250 https://www.sparkfun.com/products/13762
-    Ultrasonic Sensor - HC-SR04 https://www.sparkfun.com/products/13959
-    Infrared Proximity Sensor - Sharp https://www.sparkfun.com/products/242
-    Infrared Proximity Sensor Short Range - Sharp https://www.sparkfun.com/products/12728
-    Servo - Generic (Sub-Micro Size) https://www.sparkfun.com/products/9065
-    Vex Motor Controller 29 https://www.vexrobotics.com/276-2193.html
-    Vex Motors https://www.vexrobotics.com/motors.html
-    Turnigy nano-tech 2200mah 2S https://hobbyking.com/en_us/turnigy-nano-tech-2200mah-2s-25-50c-lipo-pack.html
-  Date: 11/11/2016
-  Author: Logan Stuart
-  Modified: 15/02/2018
-  Author: Logan Stuart
-*/
-#include <Servo.h> //Need for Servo pulse output
-#include <PID_v1.h>
+//README============================================================================================================start
+//This is the main code for MECHENG 706, Project 2, G11 
+//README==============================================================================================================end
+
+
+
+//import libraries==================================================================================================start
 #include <Arduino.h>
+#include <Servo.h> //Need for Servo pulse output
+//import libraries====================================================================================================end
 
 
-// #define NO_READ_GYRO  //Uncomment of GYRO is not attached.
-// #define NO_HC-SR04 //Uncomment of HC-SR04 ultrasonic ranging sensor is not attached.
-// #define NO_BATTERY_V_OK //Uncomment of BATTERY_V_OK if you do not care about battery damage.
+
+//variables declearation============================================================================================start
+//motors
+Servo left_font_motor;  // create servo object to control Vex Motor Controller 29
+Servo left_rear_motor;  // create servo object to control Vex Motor Controller 29
+Servo right_rear_motor; // create servo object to control Vex Motor Controller 29
+Servo right_font_motor; // create servo object to control Vex Motor Controller 29
+Servo turret_motor;
+
+const byte left_front = 46;
+const byte left_rear = 47;
+const byte right_rear = 50;
+const byte right_front = 51;
+
+int speed_val = 500;
+int speed_change;
+
+//ultrasonic sensor
+const unsigned int MAX_DIST = 23200;
+
+const int TRIG_PIN = 48;
+const int ECHO_PIN = 49;
+
+// gyro
+int sensorPin = A2;            // define the pin that gyro is connected
+int sensorValue = 0;           // read out value of sensor
+float gyroSupplyVoltage = 5;   // supply voltage for gyro
+float gyroZeroVoltage = 0;     // the value of voltage when gyro is zero
+float gyroSensitivity = 0.007; // gyro sensitivity unit is (mv/degree/second) get from datasheet
+float rotationThreshold = 1.5; // because of gyro drifting, defining rotation angular velocity less than
+                        // this value will not be ignored
+float gyroRate = 0;     // read out value of sensor in voltage
+double currentAngle = 0; // current angle calculated by angular velocity integral on
+
 
 // State machine states
 enum STATE
@@ -33,45 +53,30 @@ enum STATE
   STOPPED
 };
 
+int pos = 0;
+int i;
+float sum = 0;
 
-// Refer to Shield Pinouts.jpg for pin locations
+// Serial Pointer
+HardwareSerial *SerialCom;
+//variables declearation==============================================================================================end
 
-// Default motor control pins
-const byte left_front = 46;
-const byte left_rear = 47;
-const byte right_rear = 50;
-const byte right_front = 51;
 
-// Default ultrasonic ranging sensor pins, these pins are defined my the Shield
-const int TRIG_PIN = 48;
-const int ECHO_PIN = 49;
 
-// Default IR sensor pins, these pins are defined by the Shield
-#define IR_41_01 12
-#define IR_41_02 A8
-#define IR_41_03 A10
-// #define IR_2Y_01 14
-#define IR_2Y_02 A11
-// uncomment if these IR sensors are used
-//  #define IR_2Y_03 14
-#define IR_2Y_04 A9
+//functions declearation============================================================================================start
+STATE initialising();
+STATE running();
+STATE stopped();
 
-//Prototype functions
+void fast_flash_double_LED_builtin();
+void slow_flash_LED_builtin();
+boolean is_battery_voltage_OK();
+
+void Analog_Range_A4();
+void GYRO_reading();
+float HC_SR04_range();
 void resetGyro();
-void homing_normal_system(bool use_Gyro, bool use_sonar, bool use_left_side_IRs, bool use_right_side_IRs, float tolarence);
-void findCorner();
-void move_along_wall(bool use_Gyro, bool use_sonar, bool use_left_side_IRs, bool use_right_side_IRs, float tolarence);
-void checkForLongSide();
-void ccw_low();
-void cw_low();
-void MoveStraightPID(float Power);
-void turnAngleWithGyro(float angle, float millisecond);
-void driveStrightUntilDistance(int cm);
-void driveStringhtForDistance(int cm);
-void MoveStraightAlongAngle(float TargetAngle_Degree, float Power);
-int saturation(int value);
-void readGyro();
-void readGyro1();
+
 void disable_motors();
 void enable_motors();
 void stop();
@@ -81,98 +86,14 @@ void ccw();
 void cw();
 void strafe_left();
 void strafe_right();
-void trunDegree(float TargetAngle_Degree );
-void Car_Move_withIRSensor(String left_front_IR, String left_back_IR, String right_front_IR, String right_back_IR);
-double IR_sensorReadDistance(String sensor);
-void interpret_command(char command);
-float HC_SR04_range();
-void ReadAllSensor();
-void  execute_movement_phase();
-STATE running();
+
+void speed_change_smooth();
+//functions declearation==============================================================================================end
 
 
 
-//------------------------------------------------------------------------ Variables ------------------------------------------------------------------------//
-
-
-// Anything over 400 cm (23200 us pulse) is "out of range". Hit:If you decrease to this the ranging sensor but the timeout is short, you may not need to read up to 4meters.
-const unsigned int MAX_DIST = 23200;
-
-Servo left_font_motor;  // create servo object to control Vex Motor Controller 29
-Servo left_rear_motor;  // create servo object to control Vex Motor Controller 29
-Servo right_rear_motor; // create servo object to control Vex Motor Controller 29
-Servo right_font_motor; // create servo object to control Vex Motor Controller 29
-Servo turret_motor;
-
-//Speed and motor movement
-int speed_val = 500;
-int speed_change;
-int speed_val_low = 150;
-
-//PID
-int KP = 100;
-float ErrorAngle_Degree = 0.0;
-float offset_angle = -0.1;
-
-
-int SVRF = 0;
-int SVRR = 0;
-int SVLF = 0;
-int SVLR = 0;
-
-int Kp = 1000;
-int SV_P = 0;
-
-float TargetAngle_Radius = 0.0;
-float ErrorAngle_Radius = 0.0; // TargetAngle - CurrentAngle
-float torlance = 10.0;         // degree
-
-
-// gyro
-int sensorPin = A7;            // define the pin that gyro is connected
-int sensorValue = 0;           // read out value of sensor
-float gyroSupplyVoltage = 5;   // supply voltage for gyro
-float gyroZeroVoltage = 0;     // the value of voltage when gyro is zero
-float gyroSensitivity = 0.007; // gyro sensitivity unit is (mv/degree/second) get from datasheet
-float rotationThreshold = 1.5; // because of gyro drifting, defining rotation angular velocity less than
-// this value will not be ignored
-float gyroRate = 0;     // read out value of sensor in voltage
-double currentAngle = 0; // current angle calculated by angular velocity integral on
-float GyroTimeNow = 0;
-float GyroTimePrevious = 0;
-
-int movement_phase = 0; //use for flow control of the robots programmed movement
-int currentState = 0;
-
-//IR Readings
-float temp_4102 = 0.0;
-float temp_4103 = 0.0;
-float temp_2Y02 = 0.0;
-float temp_2Y04 = 0.0;
-
-//Sonar Readings
-float sonar_reading = 0;
-float sonar_reading_prev1 = 0;
-float sonar_reading_prev2 = 0;
-float sonar_reading_prev3 = 0;
-float sonar_reading_prev4 = 0;
-float sonar_reading_prev5 = 0;
-
-float sonar_average = 0;
-float sonar_average_prev1 = 0;
-
-//move along wall variables
-float Kp_IR_abs = 0;
-float Ki_IR_abs = 0;
-float Kp_IR_dif = 0;
-float Ki_IR_dif = 0;
-
-float Kp_GV_dif = 10;
-float Ki_GV_dif = 1;
-
-
-void setup(void)
-{
+//setup=============================================================================================================start
+void setup() {
   turret_motor.attach(11);
   pinMode(LED_BUILTIN, OUTPUT);
 
@@ -180,45 +101,240 @@ void setup(void)
   pinMode(TRIG_PIN, OUTPUT);
   digitalWrite(TRIG_PIN, LOW);
 
-  //bluetooth on
-  //Serial1.begin(115200);
+  // Setup the Serial port and pointer, the pointer allows switching the debug info through the USB port(Serial) or Bluetooth port(Serial1) with ease.
+  SerialCom = &Serial;
+  SerialCom->begin(115200);
+  SerialCom->println("MECHENG706_Base_Code_25/01/2018");
+
+  delay(1000);
+  SerialCom->println("Setup....");
   Serial1.begin(115200);
 
   // setting up gyro
-  pinMode(sensorPin, INPUT);
+  resetGyro();
 
   delay(1000); // settling time but no really needed
 }
+//setup===============================================================================================================end
 
-//NO TOUCH
-void loop(void) // main loop
-{
+
+
+//main loop=========================================================================================================start
+void loop() {
   static STATE machine_state = INITIALISING;
   // Finite-state machine Code
+  //SerialCom->println("looping---------------------------------------------");
   switch (machine_state)
   {
-  case INITIALISING:
-    machine_state = initialising();
-    break;
-  case RUNNING:
-    machine_state = running();
-    break;
-  case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
-    machine_state = stopped();
-    break;
-  }
-}
+    case INITIALISING:
+    {
+      machine_state = initialising();
+      break;
+    }
+    case RUNNING: 
+    {
 
+  
+      bool isReach = 0;
+      float distance_sonar = 0.0;
+      bool isObject = 1;
+      int strafe_count = 0;
+ 
+      while(!isReach)
+      {
+        forward();
+        distance_sonar = HC_SR04_range();
+
+        if(distance_sonar <= 15)
+        {
+          while(isObject)
+          {
+            strafe_left();
+            delay(200);
+            distance_sonar = HC_SR04_range();
+            strafe_count++;
+
+            if(distance_sonar > 15)
+            {
+              isObject = 0;
+              strafe_count = 0;
+            }
+            else if(strafe_count >= 3)
+            {
+              isObject = 0;
+              isReach = 1;
+            }
+            else{}
+          }
+        }
+      }
+
+      while(true)
+      {
+        ccw();
+      }
+
+
+
+
+      break;
+    }
+    case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
+    {
+      machine_state = stopped();
+      break;
+    }
+  };
+}
+//main loop===========================================================================================================end
+
+
+
+//sesors functions==================================================================================================start
+#ifndef NO_HC_SR04
+  float HC_SR04_range()
+  {
+    unsigned long t1;
+    unsigned long t2;
+    unsigned long pulse_width;
+    float cm;
+    //float inches;
+
+    // Hold the trigger pin high for at least 10 us
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+
+    // Wait for pulse on echo pin
+    t1 = micros();
+    while (digitalRead(ECHO_PIN) == 0)
+    {
+      t2 = micros();
+      pulse_width = t2 - t1;
+      if (pulse_width > (MAX_DIST + 1000))
+      {
+        SerialCom->println("HC-SR04: NOT found");
+        return -1;
+      }
+    }
+
+    // Measure how long the echo pin was held high (pulse width)
+    // Note: the micros() counter will overflow after ~70 min
+
+    t1 = micros();
+    while (digitalRead(ECHO_PIN) == 1)
+    {
+      t2 = micros();
+      pulse_width = t2 - t1;
+      if (pulse_width > (MAX_DIST + 1000))
+      {
+        SerialCom->println("HC-SR04: Out of range");
+        return -1;
+      }
+    }
+
+    t2 = micros();
+    pulse_width = t2 - t1;
+
+    // Calculate distance in centimeters and inches. The constants
+    // are found in the datasheet, and calculated from the assumed speed
+    // of sound in air at sea level (~340 m/s).
+    cm = pulse_width / 58.0;
+    //inches = pulse_width / 148.0;
+  
+    // Print out results
+    if (pulse_width > MAX_DIST)
+    {
+      //SerialCom->println("HC-SR04: Out of range");
+    }
+    else
+    {
+      //SerialCom->print("HC-SR04:");
+      //SerialCom->print(cm);
+      //SerialCom->println("cm");
+    }
+
+  return cm;
+  }
+#endif
+
+void resetGyro()
+{
+  long sum = 0;
+  for (int i = 0; i < 100; i++) // read 100 values of voltage when gyro is at still, to calculate the zero-drift
+  {
+    sensorValue = analogRead(sensorPin);
+    // Serial1.print("delta sum: ");
+    // Serial1.println(sensorValue);
+    sum += sensorValue;
+    // Serial1.print("sum: ");
+    // Serial1.println(sum);
+    delay(5);
+  }
+  gyroZeroVoltage = int(sum / 100); // average the sum as the zero drifting
+  //Serial1.println(gyroZeroVoltage);
+
+  currentAngle = 0.0;
+}
+//sesors functions====================================================================================================end
+
+
+
+//background statemachine===========================================================================================start
 STATE initialising()
 {
   // initialising
-  Serial1.println("INITIALISING....");
+  SerialCom->println("INITIALISING....");
   // delay(1000); // One second delay to see the serial String "INITIALISING...."
-  Serial1.println("Enabling Motors...");
+  SerialCom->println("Enabling Motors...");
   enable_motors();
-  Serial1.println("please keep the sensor still for calibration");
-  //Serial1.println("get the gyro zero voltage");
+  SerialCom->println("RUNNING STATE...");
+
   resetGyro();
+
+  return RUNNING;
+}
+
+STATE running()
+{
+
+  static unsigned long previous_millis;
+
+  //read_serial_command();
+  fast_flash_double_LED_builtin();
+
+  if (millis() - previous_millis > 500)
+  { // Arduino style 500ms timed execution statement
+    previous_millis = millis();
+
+    SerialCom->println("RUNNING---------");
+    speed_change_smooth();
+    Analog_Range_A4();
+
+  #ifndef NO_READ_GYRO
+    GYRO_reading();
+  #endif
+
+  #ifndef NO_HC_SR04
+    HC_SR04_range();
+  #endif
+
+  #ifndef NO_BATTERY_V_OK
+    if (!is_battery_voltage_OK())
+    return STOPPED;
+  #endif
+
+    turret_motor.write(pos);
+
+    if (pos == 0)
+    {
+      pos = 45;
+    }
+    else
+    {
+      pos = 0;
+    }
+  }
 
   return RUNNING;
 }
@@ -228,37 +344,36 @@ STATE stopped()
 {
   static byte counter_lipo_voltage_ok;
   static unsigned long previous_millis;
-  int Lipo_level_cal;
+  //int Lipo_level_cal;
   disable_motors();
   slow_flash_LED_builtin();
 
   if (millis() - previous_millis > 500)
   { // print massage every 500ms
     previous_millis = millis();
-    Serial1.println("STOPPED---------");
+    SerialCom->println("STOPPED---------");
 
-#ifndef NO_BATTERY_V_OK
+    #ifndef NO_BATTERY_V_OK
     // 500ms timed if statement to check lipo and output speed settings
-    if (is_battery_voltage_OK())
-    {
-      Serial1.println("Lipo OK waiting of voltage Counter 10 < ");
-      Serial1.println(counter_lipo_voltage_ok);
-      counter_lipo_voltage_ok++;
-      if (counter_lipo_voltage_ok > 10)
-      { // Making sure lipo voltage is stable
-        counter_lipo_voltage_ok = 0;
-        enable_motors();
-        Serial1.println("Lipo OK returning to RUN STATE");
-        return RUNNING;
+      if (is_battery_voltage_OK())
+      {
+        SerialCom->print("Lipo OK waiting of voltage Counter 10 < ");
+        SerialCom->println(counter_lipo_voltage_ok);
+        counter_lipo_voltage_ok++;
+        if (counter_lipo_voltage_ok > 10)
+        { // Making sure lipo voltage is stable
+          counter_lipo_voltage_ok = 0;
+          enable_motors();
+          SerialCom->println("Lipo OK returning to RUN STATE");
+          return RUNNING;
+        }
       }
-    }
-    else
-    {
-      counter_lipo_voltage_ok = 0;
-    }
-#endif
+      else
+      {
+        counter_lipo_voltage_ok = 0;
+      }
+    #endif
   }
-  //Serial1.println("Lipo not OK");
   return STOPPED;
 }
 
@@ -297,60 +412,173 @@ void speed_change_smooth()
 {
   speed_val += speed_change;
   if (speed_val > 1000)
+  {
     speed_val = 1000;
+  }
   speed_change = 0;
 }
 
 #ifndef NO_BATTERY_V_OK
-boolean is_battery_voltage_OK()
-{
-  static byte Low_voltage_counter;
-  static unsigned long previous_millis;
-
-  int Lipo_level_cal;
-  int raw_lipo;
-  // the voltage of a LiPo cell depends on its chemistry and varies from about 3.5V (discharged) = 717(3.5V Min) https://oscarliang.com/lipo-battery-guide/
-  // to about 4.20-4.25V (fully charged) = 860(4.2V Max)
-  // Lipo Cell voltage should never go below 3V, So 3.5V is a safety factor.
-  raw_lipo = analogRead(A0);
-  Lipo_level_cal = (raw_lipo - 717);
-  Lipo_level_cal = Lipo_level_cal * 100;
-  Lipo_level_cal = Lipo_level_cal / 143;
-
-  if (Lipo_level_cal > 0 && Lipo_level_cal < 160)
+  boolean is_battery_voltage_OK()
   {
-    previous_millis = millis();
-    // Serial1.print("Lipo level:");
-    // Serial1.print(Lipo_level_cal);
-    // Serial1.print("%");
-    // // Serial1.print(" : Raw Lipo:");
-    // // Serial1.println(raw_lipo);
-    // Serial1.println("");
-    Low_voltage_counter = 0;
-    return true;
-  }
-  else
-  {
-    if (Lipo_level_cal < 0)
-      Serial1.println("Lipo is Disconnected or Power Switch is turned OFF!!!");
-    else if (Lipo_level_cal > 160)
-      Serial1.println("!Lipo is Overchanged!!!");
+    static byte Low_voltage_counter;
+    //static unsigned long previous_millis;
+
+    int Lipo_level_cal;
+    int raw_lipo;
+    // the voltage of a LiPo cell depends on its chemistry and varies from about 3.5V (discharged) = 717(3.5V Min) https://oscarliang.com/lipo-battery-guide/
+    // to about 4.20-4.25V (fully charged) = 860(4.2V Max)
+    // Lipo Cell voltage should never go below 3V, So 3.5V is a safety factor.
+    raw_lipo = analogRead(A0);
+    Lipo_level_cal = (raw_lipo - 717);
+    Lipo_level_cal = Lipo_level_cal * 100;
+    Lipo_level_cal = Lipo_level_cal / 143;
+
+    if ((Lipo_level_cal > 0 && Lipo_level_cal < 160)||(true))//===========================================================================================================================
+    {
+      //previous_millis = millis();
+      SerialCom->print("Lipo level:");
+      SerialCom->print(Lipo_level_cal);
+      SerialCom->print("%");
+      // SerialCom->print(" : Raw Lipo:");
+      // SerialCom->println(raw_lipo);
+      SerialCom->println("");
+      Low_voltage_counter = 0;
+      return true;
+    }
     else
     {
-      Serial1.println("Lipo voltage too LOW, any lower and the lipo with be damaged");
-      Serial1.print("Please Re-charge Lipo:");
-      Serial1.print(Lipo_level_cal);
-      Serial1.println("%");
-    }
+      if (Lipo_level_cal < 0)
+        SerialCom->println("Lipo is Disconnected or Power Switch is turned OFF!!!");
+      else if (Lipo_level_cal > 160)
+        SerialCom->println("!Lipo is Overchanged!!!");
+      else
+      {
+        SerialCom->println("Lipo voltage too LOW, any lower and the lipo with be damaged");
+        SerialCom->print("Please Re-charge Lipo:");
+        SerialCom->print(Lipo_level_cal);
+        SerialCom->println("%");
+      }
 
-    Low_voltage_counter++;
-    if (Low_voltage_counter > 5)
-      return false;
-    else
-      return true;
+      Low_voltage_counter++;
+      if (Low_voltage_counter > 5)
+        return false;
+      else
+        return true;
+    }
   }
-}
 #endif
 
+//------------------------------
+
+void Analog_Range_A4()
+{
+  SerialCom->print("Analog Range A4:");
+  SerialCom->println(analogRead(A4));
+}
+
+#ifndef NO_READ_GYRO
+  void GYRO_reading()
+  {
+    SerialCom->print("GYRO A3:");
+    SerialCom->println(analogRead(A3));
+  }
+#endif
+//background statemachine=============================================================================================end
 
 
+
+//functions definition==============================================================================================start
+void disable_motors()
+{
+  left_font_motor.detach();  // detach the servo on pin left_front to turn Vex Motor Controller 29 Off
+  left_rear_motor.detach();  // detach the servo on pin left_rear to turn Vex Motor Controller 29 Off
+  right_rear_motor.detach(); // detach the servo on pin right_rear to turn Vex Motor Controller 29 Off
+  right_font_motor.detach(); // detach the servo on pin right_front to turn Vex Motor Controller 29 Off
+
+  pinMode(left_front, INPUT);
+  pinMode(left_rear, INPUT);
+  pinMode(right_rear, INPUT);
+  pinMode(right_front, INPUT);
+}
+
+void enable_motors()
+{
+  left_font_motor.attach(left_front);   // attaches the servo on pin left_front to turn Vex Motor Controller 29 On
+  left_rear_motor.attach(left_rear);    // attaches the servo on pin left_rear to turn Vex Motor Controller 29 On
+  right_rear_motor.attach(right_rear);  // attaches the servo on pin right_rear to turn Vex Motor Controller 29 On
+  right_font_motor.attach(right_front); // attaches the servo on pin right_front to turn Vex Motor Controller 29 On
+}
+void stop() // Stop
+{
+  left_font_motor.writeMicroseconds(1500);
+  left_rear_motor.writeMicroseconds(1500);
+  right_rear_motor.writeMicroseconds(1500);
+  right_font_motor.writeMicroseconds(1500);
+}
+
+void forward()
+{
+  left_font_motor.writeMicroseconds(1500 + speed_val);
+  left_rear_motor.writeMicroseconds(1500 + speed_val);
+  right_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_font_motor.writeMicroseconds(1500 - speed_val);
+}
+
+void reverse()
+{
+  left_font_motor.writeMicroseconds(1500 - speed_val);
+  left_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_rear_motor.writeMicroseconds(1500 + speed_val);
+  right_font_motor.writeMicroseconds(1500 + speed_val);
+}
+
+void ccw()
+{
+  left_font_motor.writeMicroseconds(1500 - speed_val);
+  left_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_font_motor.writeMicroseconds(1500 - speed_val);
+}
+
+void cw()
+{
+  left_font_motor.writeMicroseconds(1500 + speed_val);
+  left_rear_motor.writeMicroseconds(1500 + speed_val);
+  right_rear_motor.writeMicroseconds(1500 + speed_val);
+  right_font_motor.writeMicroseconds(1500 + speed_val);
+}
+
+void strafe_left()
+{
+  left_font_motor.writeMicroseconds(1500 - speed_val);
+  left_rear_motor.writeMicroseconds(1500 + speed_val);
+  right_rear_motor.writeMicroseconds(1500 + speed_val);
+  right_font_motor.writeMicroseconds(1500 - speed_val);
+}
+
+void strafe_right()
+{
+  left_font_motor.writeMicroseconds(1500 + speed_val);
+  left_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_font_motor.writeMicroseconds(1500 + speed_val);
+}
+
+int speed_val_low = 110;
+void ccw_low()
+{
+  left_font_motor.writeMicroseconds(1500 - speed_val_low);
+  left_rear_motor.writeMicroseconds(1500 - speed_val_low);
+  right_rear_motor.writeMicroseconds(1500 - speed_val_low);
+  right_font_motor.writeMicroseconds(1500 - speed_val_low);
+}
+
+void cw_low()
+{
+  left_font_motor.writeMicroseconds(1500 + speed_val_low);
+  left_rear_motor.writeMicroseconds(1500 + speed_val_low);
+  right_rear_motor.writeMicroseconds(1500 + speed_val_low);
+  right_font_motor.writeMicroseconds(1500 + speed_val_low);
+}
+//functionx definition================================================================================================end
