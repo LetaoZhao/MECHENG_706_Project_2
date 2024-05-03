@@ -134,8 +134,8 @@ double IR_sensorReadDistance(const char *sensor)
 
     double distance = 0.0;
     double sensor_value = 0.0;
-    double temp_reading = 0.0;
-    int pinNum = 0;
+    //double temp_reading = 0.0;
+    //int pinNum = 0;
 
     // if (sensor == "41_02")  //new
     // {
@@ -253,6 +253,6 @@ else
     // SerialCom->println("Invalid sensor"); // Uncomment and adjust according to your setup
     distance = 0;
 }
-    temp_reading = 0.0;
+    //temp_reading = 0.0;
     return distance;
 }

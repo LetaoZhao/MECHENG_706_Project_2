@@ -2,14 +2,14 @@
 #include <GlobalVariable.hpp>
 #include <PID_v1.h>
 
-#ifndef NO_HC - SR04
+#ifndef NO_HC_SR04
 float HC_SR04_range()
 {
     unsigned long t1;
     unsigned long t2;
     unsigned long pulse_width;
     float cm;
-    float inches;
+    //float inches;
 
     // Hold the trigger pin high for at least 10 us
     digitalWrite(TRIG_PIN, HIGH);
@@ -51,7 +51,7 @@ float HC_SR04_range()
     // are found in the datasheet, and calculated from the assumed speed
     // of sound in air at sea level (~340 m/s).
     cm = pulse_width / 58.0;
-    inches = pulse_width / 148.0;
+    //inches = pulse_width / 148.0;
 
     // Print out results
     if (pulse_width > MAX_DIST)

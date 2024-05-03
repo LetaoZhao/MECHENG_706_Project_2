@@ -1,6 +1,8 @@
 
 void disable_motors();
 void enable_motors();
+void disable_turret();
+void enable_turret();
 void stop();
 void forward();
 void reverse();

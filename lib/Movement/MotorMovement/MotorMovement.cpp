@@ -25,6 +25,19 @@ void enable_motors()
     right_rear_motor.attach(right_rear);  // attaches the servo on pin right_rear to turn Vex Motor Controller 29 On
     right_font_motor.attach(right_front); // attaches the servo on pin right_front to turn Vex Motor Controller 29 On
 }
+
+void disable_turret()
+{
+  turret_motor.detach();
+
+  pinMode(turret, INPUT);
+}
+
+void enable_turret()
+{
+  turret_motor.attach(turret);
+}
+
 void stop() // Stop
 {
     left_font_motor.writeMicroseconds(1500);
