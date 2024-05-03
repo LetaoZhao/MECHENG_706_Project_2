@@ -1,0 +1,1 @@
+double IR_sensorReadDistance(const char *sensor);
