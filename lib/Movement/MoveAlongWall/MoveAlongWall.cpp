@@ -7,10 +7,24 @@
 #include <SerialComs.hpp>
 #include <IR_Read.hpp>
 
-// float VALUE_2Y04 = 0.0;
-// float VALUE_4102 = 0.0;
-// float VALUE_4103 = 0.0;
-// float VALUE_2Y02 = 0.0;
+float find_average_IR(const char *name)
+{
+    // Serial.print("one roll ");
+    float readings = 0.0;
+    float temp_reading = 0.0;
+
+    for (int i = 0; i <= 4; i++)
+    {
+        temp_reading = IR_sensorReadDistance(name);
+        readings += temp_reading;
+        // Serial.print(temp_reading);
+        // Serial.print(" ");
+        delay(5);
+    }
+
+    return (readings / 5);
+}
+
 
 void moving_alone_wall(float target_distance_Sonar, float target_distance_IR, bool using_gyro, bool use_left_side_IRs, bool use_right_side_IRs, int go_reverse)
 {
@@ -168,20 +182,3 @@ void moving_alone_wall(float target_distance_Sonar, float target_distance_IR, bo
     return;
 }
 
-float find_average_IR(const char *name)
-{
-    // Serial.print("one roll ");
-    float readings = 0.0;
-    float temp_reading = 0.0;
-
-    for (int i = 0; i <= 4; i++)
-    {
-        temp_reading = IR_sensorReadDistance(name);
-        readings += temp_reading;
-        // Serial.print(temp_reading);
-        // Serial.print(" ");
-        delay(5);
-    }
-
-    return (readings / 5);
-}

@@ -2,6 +2,8 @@
 #include "GlobalVariable.hpp"
 #include <PID_v1.h>
 
+
+
 // This file contains the IR sensor conversion.
 
 //----------------------Sensor Reading & conversion to mm-------------------------
@@ -226,41 +228,31 @@ double IR_sensorReadDistance(const char *sensor)
     //   sensor_value = analogRead(IR_41_01);
     //   distance = 27592 * pow(sensor_value, -1.018);
     // }
-    if (sensor == "41_02") // old
-    {
-        sensor_value = analogRead(IR_41_02);
-        distance = 7935.4 * pow(sensor_value, -0.827) + 17;
-    }
-    else if (sensor == "41_03") // old
-    {
-        sensor_value = analogRead(IR_41_03);
-        distance = 30119 * pow(sensor_value, -1.039);
-    }
-    // else if(sensor == "2Y_01") //old
-    // {
-    //   sensor_value = analogRead(IR_2Y_01);
-    //   distance = 1888777 * pow(sensor_value, -1.237);
-    // }
-    else if (sensor == "2Y_02") // old
-    {
-        sensor_value = analogRead(IR_2Y_02);
-        distance = 92838 * pow(sensor_value, -1.097) + 10;
-    }
-    // else if(sensor = "2Y_03") //old
-    // {
-    //   sensor_value = analogRead(IR_2Y_03);
-    //   distance = 7927.4 * pow(sensor_value, -0.687);
-    // }
-    else if (sensor = "2Y_04") // old
-    {
-        sensor_value = analogRead(IR_2Y_04);
-        distance = 50857 * pow(sensor_value, -0.994);
-    }
-    else
-    {
-        // SerialCom->println("Invalid sensor");
-        distance = 0;
-    }
+   if (strcmp(sensor, "41_02") == 0)
+{
+    sensor_value = analogRead(IR_41_02);
+    distance = 7935.4 * pow(sensor_value, -0.827) + 17;
+}
+else if (strcmp(sensor, "41_03") == 0)
+{
+    sensor_value = analogRead(IR_41_03);
+    distance = 30119 * pow(sensor_value, -1.039);
+}
+else if (strcmp(sensor, "2Y_02") == 0)
+{
+    sensor_value = analogRead(IR_2Y_02);
+    distance = 92838 * pow(sensor_value, -1.097) + 10;
+}
+else if (strcmp(sensor, "2Y_04") == 0)
+{
+    sensor_value = analogRead(IR_2Y_04);
+    distance = 50857 * pow(sensor_value, -0.994);
+}
+else
+{
+    // SerialCom->println("Invalid sensor"); // Uncomment and adjust according to your setup
+    distance = 0;
+}
     temp_reading = 0.0;
     return distance;
 }

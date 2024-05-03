@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "GlobalVariable.hpp"
+#include <GlobalVariable.hpp>
 #include <PID_v1.h>
 
 #ifndef NO_HC - SR04
@@ -22,10 +22,10 @@ float HC_SR04_range()
     {
         t2 = micros();
         pulse_width = t2 - t1;
-        if (pulse_width > (MAX_DIST + 1000))
+        if (pulse_width > (MAX_DIST ))
         {
             // Serial1.println("HC-SR04: NOT found");
-            return;
+            return 0.0;
         }
     }
 
@@ -37,7 +37,7 @@ float HC_SR04_range()
     {
         t2 = micros();
         pulse_width = t2 - t1;
-        if (pulse_width > (MAX_DIST + 1000))
+        if (pulse_width > (MAX_DIST))
         {
             // Serial1.println("HC-SR04: Out of range");
             return -1;

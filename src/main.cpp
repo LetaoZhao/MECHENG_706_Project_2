@@ -6,6 +6,7 @@
 #include <Arduino.h>
 #include <Servo.h> //Need for Servo pulse output
 #include <MotorMovement/MotorMovement.hpp>
+#include <GlobalVariable.hpp>
 #include <SerialComs.hpp>
 #include "Gyro.hpp"
 #include <Sonar.hpp>
@@ -13,36 +14,32 @@
 
 // variables declearation============================================================================================start
 // motors
-Servo left_font_motor;  // create servo object to control Vex Motor Controller 29
-Servo left_rear_motor;  // create servo object to control Vex Motor Controller 29
-Servo right_rear_motor; // create servo object to control Vex Motor Controller 29
-Servo right_font_motor; // create servo object to control Vex Motor Controller 29
-Servo turret_motor;
 
-const byte left_front = 46;
-const byte left_rear = 47;
-const byte right_rear = 50;
-const byte right_front = 51;
 
-int speed_val = 500;
-int speed_change;
+// const byte left_front = 46;
+// const byte left_rear = 47;
+// const byte right_rear = 50;
+// const byte right_front = 51;
 
-// ultrasonic sensor
-const unsigned int MAX_DIST = 23200;
+// int speed_val = 500;
+// int speed_change;
 
-const int TRIG_PIN = 48;
-const int ECHO_PIN = 49;
+// // ultrasonic sensor
+// const unsigned int MAX_DIST = 23200;
 
-// gyro
-int sensorPin = A2;            // define the pin that gyro is connected
-int sensorValue = 0;           // read out value of sensor
-float gyroSupplyVoltage = 5;   // supply voltage for gyro
-float gyroZeroVoltage = 0;     // the value of voltage when gyro is zero
-float gyroSensitivity = 0.007; // gyro sensitivity unit is (mv/degree/second) get from datasheet
-float rotationThreshold = 1.5; // because of gyro drifting, defining rotation angular velocity less than
-                               // this value will not be ignored
-float gyroRate = 0;            // read out value of sensor in voltage
-double currentAngle = 0;       // current angle calculated by angular velocity integral on
+// const int TRIG_PIN = 48;
+// const int ECHO_PIN = 49;
+
+// // gyro
+// int sensorPin = A2;            // define the pin that gyro is connected
+// int sensorValue = 0;           // read out value of sensor
+// float gyroSupplyVoltage = 5;   // supply voltage for gyro
+// float gyroZeroVoltage = 0;     // the value of voltage when gyro is zero
+// float gyroSensitivity = 0.007; // gyro sensitivity unit is (mv/degree/second) get from datasheet
+// float rotationThreshold = 1.5; // because of gyro drifting, defining rotation angular velocity less than
+//                                // this value will not be ignored
+// float gyroRate = 0;            // read out value of sensor in voltage
+// double currentAngle = 0;       // current angle calculated by angular velocity integral on
 
 // State machine states
 enum STATE
@@ -56,14 +53,14 @@ int pos = 0;
 int i;
 float sum = 0;
 
-// Serial Pointer
+// // Serial Pointer
 HardwareSerial *SerialCom;
 // variables declearation==============================================================================================end
 
 // functions declearation============================================================================================start
-STATE initialising();
-STATE running();
-STATE stopped();
+// STATE initialising();
+// STATE running();
+// STATE stopped();
 
 void fast_flash_double_LED_builtin();
 void slow_flash_LED_builtin();
@@ -75,101 +72,6 @@ void GYRO_reading();
 void speed_change_smooth();
 // functions declearation==============================================================================================end
 
-// setup=============================================================================================================start
-void setup()
-{
-  turret_motor.attach(11);
-  pinMode(LED_BUILTIN, OUTPUT);
-
-  // The Trigger pin will tell the sensor to range find
-  pinMode(TRIG_PIN, OUTPUT);
-  digitalWrite(TRIG_PIN, LOW);
-
-  // Setup the Serial port and pointer, the pointer allows switching the debug info through the USB port(Serial) or Bluetooth port(Serial1) with ease.
-  SerialCom = &Serial;
-  SerialCom->begin(115200);
-  SerialCom->println("MECHENG706_Base_Code_25/01/2018");
-
-  delay(1000);
-  SerialCom->println("Setup....");
-  Serial1.begin(115200);
-
-  // setting up gyro
-  resetGyro();
-
-  delay(1000); // settling time but no really needed
-}
-// setup===============================================================================================================end
-
-// main loop=========================================================================================================start
-void loop()
-{
-  static STATE machine_state = INITIALISING;
-  // Finite-state machine Code
-  // SerialCom->println("looping---------------------------------------------");
-  switch (machine_state)
-  {
-  case INITIALISING:
-  {
-    machine_state = initialising();
-    break;
-  }
-  case RUNNING:
-  {
-
-    bool isReach = 0;
-    float distance_sonar = 0.0;
-    bool isObject = 1;
-    int strafe_count = 0;
-
-    while (!isReach)
-    {
-      forward();
-      distance_sonar = HC_SR04_range();
-
-      if (distance_sonar <= 15)
-      {
-        while (isObject)
-        {
-          strafe_left(500);
-          delay(200);
-          distance_sonar = HC_SR04_range();
-          strafe_count++;
-
-          if (distance_sonar > 15)
-          {
-            isObject = 0;
-            strafe_count = 0;
-          }
-          else if (strafe_count >= 3)
-          {
-            isObject = 0;
-            isReach = 1;
-          }
-          else
-          {
-          }
-        }
-      }
-    }
-
-    while (true)
-    {
-      ccw();
-    }
-
-    break;
-  }
-  case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
-  {
-    machine_state = stopped();
-    break;
-  }
-  };
-}
-// main loop===========================================================================================================end
-
-// background statemachine===========================================================================================start
 STATE initialising()
 {
   // initialising
@@ -213,7 +115,7 @@ STATE running()
       return STOPPED;
 #endif
 
-    turret_motor.write(pos);
+    // turret_motor.write(pos);
 
     if (pos == 0)
     {
@@ -265,6 +167,103 @@ STATE stopped()
   }
   return STOPPED;
 }
+
+// setup=============================================================================================================start
+void setup()
+{
+  turret_motor.attach(11);
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  // The Trigger pin will tell the sensor to range find
+  pinMode(TRIG_PIN, OUTPUT);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Setup the Serial port and pointer, the pointer allows switching the debug info through the USB port(Serial) or Bluetooth port(Serial1) with ease.
+  SerialCom = &Serial;
+  SerialCom->begin(115200);
+  SerialCom->println("MECHENG706_Base_Code_25/01/2018");
+
+  delay(1000);
+  SerialCom->println("Setup....");
+  Serial1.begin(115200);
+
+  // setting up gyro
+  resetGyro();
+
+  delay(1000); // settling time but no really needed
+}
+// setup===============================================================================================================end
+
+// main loop=========================================================================================================start
+void loop()
+{
+  static STATE machine_state = INITIALISING;
+  // Finite-state machine Code
+  // SerialCom->println("looping---------------------------------------------");
+  switch (machine_state)
+  {
+  case INITIALISING:
+  {
+    machine_state = initialising();
+    break;
+  }
+  case RUNNING:
+  {
+
+    bool isReach = 0;
+    float distance_sonar = 0.0;
+    bool isObject = 1;
+    int strafe_count = 0;
+
+    while (!isReach)
+    {
+      reverse();
+      distance_sonar = HC_SR04_range();
+
+      if (distance_sonar <= 15)
+      {
+        while (isObject)
+        {
+          strafe_left(500);
+          delay(200);
+          distance_sonar = HC_SR04_range();
+          strafe_count++;
+
+          if (distance_sonar > 15)
+          {
+            isObject = 0;
+            strafe_count = 0;
+          }
+          else if (strafe_count >= 3)
+          {
+            isObject = 0;
+            isReach = 1;
+          }
+          else
+          {
+          }
+        }
+      }
+    }
+
+    while (true)
+    {
+      ccw();
+    }
+
+    break;
+  }
+  case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
+  {
+    machine_state = stopped();
+    break;
+  }
+  };
+}
+// main loop===========================================================================================================end
+
+// background statemachine===========================================================================================start
+
 
 void fast_flash_double_LED_builtin()
 {

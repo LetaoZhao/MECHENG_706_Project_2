@@ -4,6 +4,7 @@
 #include "Gyro.hpp"
 #include <MotorMovement/MotorMovement.hpp>
 #include "MoveAlongWall/MoveAlongWall.hpp"
+#include "MoveStraightPID/MoveStraightPID.hpp"
 #include <Sonar.hpp>
 #include <SerialComs.hpp>
 

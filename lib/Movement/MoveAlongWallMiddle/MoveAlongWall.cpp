@@ -8,10 +8,6 @@
 #include <IR_Read.hpp>
 #include <Gyro.hpp>
 
-// float VALUE_2Y04 = 0.0;
-// float VALUE_4102 = 0.0;
-// float VALUE_4103 = 0.0;
-// float VALUE_2Y02 = 0.0;
 
 void moving_alone_wall_middle(float target_distance_Sonar, float target_distance_IR, bool use_left_side_IRs, bool use_right_side_IRs, int go_reverse)
 {
