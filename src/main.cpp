@@ -11,6 +11,7 @@
 #include "Gyro.hpp"
 #include <Sonar.hpp>
 #include <SimpleAvoidence/SimpleAvoidence.hpp>
+#include <PhotoTransistor.hpp>
 // import libraries====================================================================================================end
 
 // variables declearation============================================================================================start
@@ -83,6 +84,9 @@ STATE initialising()
   SerialCom->println("RUNNING STATE...");
 
   resetGyro();
+  SerialCom->println("Test");
+  PhotoTransistor_Initialize();
+  SerialCom->println("Initialized the photo sensors");
 
   return RUNNING;
 }
@@ -99,7 +103,7 @@ STATE running()
   { // Arduino style 500ms timed execution statement
     previous_millis = millis();
 
-    SerialCom->println("RUNNING---------");
+    // SerialCom->println("RUNNING---------");
     speed_change_smooth();
     Analog_Range_A4();
 
@@ -116,17 +120,23 @@ STATE running()
       return STOPPED;
 #endif
 
-    // turret_motor.write(pos);
+//     // turret_motor.write(pos);
 
-    if (pos == 0)
-    {
-      pos = 45;
-    }
-    else
-    {
-      pos = 0;
-    }
+//   //   if (pos == 0)
+//   //   {
+//   //     pos = 45;
+//   //   }
+//   //   else
+//   //   {
+//   //     pos = 0;
+//   //   }
   }
+
+  PhotoTransistor_Test_Angle();
+  SerialCom->print(right_avg);
+  SerialCom->print(",");
+  SerialCom->println(left_avg);
+  delay(100);
 
   return RUNNING;
 }
@@ -143,7 +153,7 @@ STATE stopped()
   if (millis() - previous_millis > 500)
   { // print massage every 500ms
     previous_millis = millis();
-    SerialCom->println("STOPPED---------");
+    // SerialCom->println("STOPPED---------");
 
 #ifndef NO_BATTERY_V_OK
     // 500ms timed if statement to check lipo and output speed settings
@@ -210,8 +220,7 @@ void loop()
   }
   case RUNNING:
   {
-    SimpleAvoidence();
-
+    machine_state = running();
     break;
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
@@ -286,12 +295,12 @@ boolean is_battery_voltage_OK()
   if ((Lipo_level_cal > 0 && Lipo_level_cal < 160) || (true)) //===========================================================================================================================
   {
     // previous_millis = millis();
-    SerialCom->print("Lipo level:");
-    SerialCom->print(Lipo_level_cal);
-    SerialCom->print("%");
+    // SerialCom->print("Lipo level:");
+    // SerialCom->print(Lipo_level_cal);
+    // SerialCom->print("%");
     // SerialCom->print(" : Raw Lipo:");
     // SerialCom->println(raw_lipo);
-    SerialCom->println("");
+    // SerialCom->println("");
     Low_voltage_counter = 0;
     return true;
   }
@@ -322,15 +331,15 @@ boolean is_battery_voltage_OK()
 
 void Analog_Range_A4()
 {
-  SerialCom->print("Analog Range A4:");
-  SerialCom->println(analogRead(A4));
+  // SerialCom->print("Analog Range A4:");
+  // SerialCom->println(analogRead(A4));
 }
 
 #ifndef NO_READ_GYRO
 void GYRO_reading()
 {
-  SerialCom->print("GYRO A3:");
-  SerialCom->println(analogRead(A3));
+  // SerialCom->print("GYRO A3:");
+  // SerialCom->println(analogRead(A3));
 }
 #endif
 // background statemachine=============================================================================================end
