@@ -214,12 +214,23 @@ void loop()
     //SimpleAvoidence();
     // fast_flash_double_LED_builtin();
     // delay(1000);
-    //enable_turret();
+    enable_turret();
     // turret_motor.writeMicroseconds(1500);
     // delay(1000);
-    // turret_motor.writeMicroseconds(1700);
+    //digitalWrite(22,HIGH);
+    while (true)
+    {
+    turret_motor.writeMicroseconds(1500);
+    delay(1000);
+    // turret_motor.writeMicroseconds(1200);
     // delay(1000);
     // turret_motor.writeMicroseconds(1500);
+    // delay(1000);
+    // turret_motor.writeMicroseconds(1800);
+    // delay(1000);
+    // turret_motor.writeMicroseconds(2100);
+    // delay(1000);
+    }
     // disable_turret();
 
     break;

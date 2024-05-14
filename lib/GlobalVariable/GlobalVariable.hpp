@@ -5,7 +5,7 @@
 #define left_rear  47
 #define right_rear  50
 #define right_front  51
-#define turret 8
+#define turret 22
 
 #define TRIG_PIN  48
 #define ECHO_PIN 49
