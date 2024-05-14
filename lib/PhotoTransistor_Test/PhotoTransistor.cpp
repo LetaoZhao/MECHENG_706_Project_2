@@ -10,6 +10,12 @@ void PhotoTransistor_Initialize() {
   pinMode(A15, INPUT); //right sensor lr
   pinMode(A14, INPUT); //left sensor lr
 
+  for(int i = 0; i < 3; i++)
+  {
+    voltage_left[i] = 0;
+    voltage_right[i] = 0;
+  }
+
   return;
 }
 
@@ -36,10 +42,5 @@ void PhotoTransistor_Test() {
 
   right_avg = right_avg/3;
   left_avg = left_avg/3;
-
-  SerialCom->print(right_avg);
-  SerialCom->print(",");
-  SerialCom->println(left_avg);
-  delay(100);
 }
 
