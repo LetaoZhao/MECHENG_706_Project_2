@@ -11,6 +11,7 @@
 #include "Gyro.hpp"
 #include <Sonar.hpp>
 #include <SimpleAvoidence/SimpleAvoidence.hpp>
+#include <TurnTurretTo/TurnTurretTo.hpp>
 // import libraries====================================================================================================end
 
 // variables declearation============================================================================================start
@@ -210,7 +211,16 @@ void loop()
   }
   case RUNNING:
   {
-    SimpleAvoidence();
+    //SimpleAvoidence();
+    // fast_flash_double_LED_builtin();
+    // delay(1000);
+    //enable_turret();
+    // turret_motor.writeMicroseconds(1500);
+    // delay(1000);
+    // turret_motor.writeMicroseconds(1700);
+    // delay(1000);
+    // turret_motor.writeMicroseconds(1500);
+    // disable_turret();
 
     break;
   }
@@ -235,7 +245,7 @@ void fast_flash_double_LED_builtin()
     indexer++;
     if (indexer > 4)
     {
-      fast_flash_millis = millis() + 700;
+      fast_flash_millis = millis() + 200;
       digitalWrite(LED_BUILTIN, LOW);
       indexer = 0;
     }

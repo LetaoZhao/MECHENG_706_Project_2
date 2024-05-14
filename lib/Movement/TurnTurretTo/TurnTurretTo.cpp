@@ -1,0 +1,4 @@
+void TurnTurretTo(double angle)
+{
+    //
+}
