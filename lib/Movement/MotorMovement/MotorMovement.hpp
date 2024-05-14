@@ -4,6 +4,7 @@ void enable_motors();
 void disable_turret();
 void enable_turret();
 void stop();
+void stop_turret();
 void forward();
 void reverse();
 void ccw();

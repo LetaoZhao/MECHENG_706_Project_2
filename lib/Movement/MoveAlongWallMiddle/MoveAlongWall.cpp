@@ -49,17 +49,17 @@ void moving_alone_wall_middle(float target_distance_Sonar, float target_distance
     static float angle_error_cumm = 0;
 
     // for using both
-    float temp_IR_distance_abs_right;
-    float temp_IR_distance_abs_left;
-    float cumm_IR_distance_abs_right;
-    float cumm_IR_distance_abs_left;
-    float temp_IR_distance_error_abs_right;
-    float temp_IR_distance_error_abs_left;
-    float cumm_IR_distance_error_abs_right;
-    float cumm_IR_distance_error_abs_left;
+    // float temp_IR_distance_abs_right;
+    // float temp_IR_distance_abs_left;
+    // float cumm_IR_distance_abs_right;
+    // float cumm_IR_distance_abs_left;
+    // float temp_IR_distance_error_abs_right;
+    // float temp_IR_distance_error_abs_left;
+    // float cumm_IR_distance_error_abs_right;
+    // float cumm_IR_distance_error_abs_left;
 
-    float target_distance_IR_right;
-    float target_distance_IR_left;
+    // float target_distance_IR_right;
+    // float target_distance_IR_left;
 
     if (use_left_side_IRs)
     {

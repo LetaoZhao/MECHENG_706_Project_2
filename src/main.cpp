@@ -11,6 +11,7 @@
 #include "Gyro.hpp"
 #include <Sonar.hpp>
 #include <SimpleAvoidence/SimpleAvoidence.hpp>
+#include <TurnTurretTo/TurnTurretTo.hpp>
 #include <PhotoTransistor.hpp>
 // import libraries====================================================================================================end
 
@@ -244,7 +245,7 @@ void fast_flash_double_LED_builtin()
     indexer++;
     if (indexer > 4)
     {
-      fast_flash_millis = millis() + 700;
+      fast_flash_millis = millis() + 200;
       digitalWrite(LED_BUILTIN, LOW);
       indexer = 0;
     }

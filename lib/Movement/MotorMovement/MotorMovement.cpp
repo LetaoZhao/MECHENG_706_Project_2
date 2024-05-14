@@ -38,6 +38,11 @@ void enable_turret()
   turret_motor.attach(turret);
 }
 
+void stop_turret()
+{
+    turret_motor.writeMicroseconds(1500);
+}
+
 void stop() // Stop
 {
     left_font_motor.writeMicroseconds(1500);
