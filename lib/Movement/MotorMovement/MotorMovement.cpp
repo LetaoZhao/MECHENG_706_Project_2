@@ -206,20 +206,35 @@ void compute_speed(float (&motor_speeds) [4])
 {
     //This function linearly scales the input of the 4 motors such that it
     float max = 0;
+    float min = 0;
+    float scale_factor = 0;
     for (int i = 0; i < 4; i++)
     {
         if (motor_speeds[i] > max)
         {
             max = motor_speeds[i];
         }
-        Serial1.println(motor_speeds[i]);
+        if (motor_speeds[i] < min)
+        {
+            min = motor_speeds[i];
+        }
+        // Serial1.println(motor_speeds[i]);
     }
 
-    float scale_factor = 500/max;
+    //case where magnitude of max is greatest
+    if (max*max >= min*min)
+    {
+        scale_factor = 500/max;
+    }
+    else
+    //case where magnitude of min is greatest
+    {
+        scale_factor = -500/min;
+    }
 
     for (int i = 0; i<4; i++)
     {
         motor_speeds[i] = motor_speeds[i]*scale_factor;
-        Serial1.println(motor_speeds[i]);
+        // Serial1.println(motor_speeds[i]);
     }
 }

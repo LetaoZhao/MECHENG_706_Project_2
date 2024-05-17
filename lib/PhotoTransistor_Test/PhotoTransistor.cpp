@@ -85,7 +85,7 @@ bool FireHoming()
 {
   static float error = 0;
   static float error_kp;
-  static float kp = 100;
+  static float kp = 1000;
   bool found_fire = false;
   if(HC_SR04_range() < 10)
   {
@@ -96,12 +96,15 @@ bool FireHoming()
     PhotoTransistor_Read();
     error = right_avg - left_avg;
     error_kp = error * kp;
-    // left_font_motor.writeMicroseconds(1500 - saturation(speed_val+error_kp));
-    // left_rear_motor.writeMicroseconds(1500 - saturation(speed_val+error_kp));
-    // right_rear_motor.writeMicroseconds(1500 + saturation(speed_val+error_kp));
-    // right_font_motor.writeMicroseconds(1500 + saturation(speed_val+error_kp));
+    //left front, left rear, right rear, right front
+    float motor_speeds[4] = {-speed_val+error_kp,-speed_val+error_kp,speed_val+error_kp,speed_val+error_kp};
+    compute_speed(motor_speeds);
+    left_font_motor.writeMicroseconds(1500 + motor_speeds[0]);
+    left_rear_motor.writeMicroseconds(1500 + motor_speeds[1]);
+    right_rear_motor.writeMicroseconds(1500 + motor_speeds[2]);
+    right_font_motor.writeMicroseconds(1500 + motor_speeds[3]);
     Serial1.print(">Error: ");
-    Serial1.println(error);
+    Serial1.println(error_kp);
 
   }
 

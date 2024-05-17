@@ -217,20 +217,17 @@ void loop()
   case RUNNING:
   {
     // machine_state = running();
-    float motor_speeds[4] = {400,500,550,450};
-    compute_speed(motor_speeds);
-    delay(100);
-    // while(FireHoming() == false)
-    // {
+    while(FireHoming() == false)
+    {
 
-    //   // Serial1.print(">Right Average: ");
-    //   // Serial1.println(right_avg);
-    //   // Serial1.print(">Left Average: ");
-    //   // Serial1.println(left_avg);
-    //   // Serial1.print(">R-L: " );
-    //   // Serial1.println(right_avg-left_avg);
-    //   // delay(10);
-    // }
+      Serial1.print(">Right Average: ");
+      Serial1.println(right_avg);
+      Serial1.print(">Left Average: ");
+      Serial1.println(left_avg);
+      Serial1.print(">R-L: " );
+      Serial1.println(right_avg-left_avg);
+      delay(10);
+    }
     break;
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery

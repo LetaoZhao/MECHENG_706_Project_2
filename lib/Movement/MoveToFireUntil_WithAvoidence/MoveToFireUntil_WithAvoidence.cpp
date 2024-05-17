@@ -47,12 +47,12 @@ void MoveToFireUntil_WithAvoidence(float TargetDistance, double Power)
                 SonarDistance = HC_SR04_range();
                 if(SonarDistance < TargetDistance) //if there is an object
                 {
-                    if(//IR say it's not fire)
+                    if(1)//IR say it's not fire)
                     {
                         stop(); //stop moving
                         Current_State = Avoiding; //avoidance
                     }
-                    else if(//IR say this is a fire)
+                    else if(2)//IR say this is a fire)
                     {
                         stop(); //stop moving
                         isRunning = 0; //function finished
