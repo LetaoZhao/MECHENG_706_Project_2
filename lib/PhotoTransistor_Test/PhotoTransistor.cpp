@@ -14,8 +14,8 @@ void PhotoTransistor_Initialize() {
 
   for(int i = 0; i < 10; i++)
   {
-    voltage_left[i] = 0;
-    voltage_right[i] = 0;
+    lr_voltage_left[i] = 0;
+    lr_voltage_right[i] = 0;
   }
 
   return;
@@ -23,54 +23,49 @@ void PhotoTransistor_Initialize() {
 
 
 void PhotoTransistor_Read() {
-  // Test is intended to be run repeatedly
-
+  //run repeatedly
   //voltage is 10 pt array
   for (int i = 9; i >= 2; i--)
   {
-    voltage_left[i] = voltage_left[i-1];
-    voltage_right[i] = voltage_right[i-1];
+    lr_voltage_left[i] = lr_voltage_left[i-1];
+    lr_voltage_right[i] = lr_voltage_right[i-1];
   }
 
-  voltage_right[0] = analogRead(A15) * 0.0049; //5V 10Bit ADC 
-  voltage_left[0] = analogRead(A14) * 0.0049; //5V 10Bit ADC 
+  lr_voltage_right[0] = analogRead(A15) * 0.0049; //5V 10Bit ADC 
+  lr_voltage_left[0] = analogRead(A14) * 0.0049; //5V 10Bit ADC 
 
-  right_avg = 0;
-  left_avg = 0;
+  lr_right_avg = 0;
+  lr_left_avg = 0;
   for(int i = 0; i < 10; i++)
   {
-    right_avg += voltage_right[i];
-    left_avg += voltage_left[i];
+    lr_right_avg += lr_voltage_right[i];
+    lr_left_avg += lr_voltage_left[i];
   }
 
-  right_avg = right_avg/10;
-  left_avg = left_avg/10;
+  lr_right_avg = lr_right_avg/10;
+  lr_left_avg = lr_left_avg/10;
 }
 
 
 bool TurnToFire()
 {
   PhotoTransistor_Read();
-  static float error = right_avg-left_avg;
-
-
-
-  if(right_avg-left_avg > 0.1)
+  if(lr_right_avg-lr_left_avg > 0.1)
   {
     // Serial.println("right bigger than left");
     cw_low();
   }
-  else if (left_avg-right_avg > 0.1)
+  else if (lr_left_avg-lr_right_avg > 0.1)
   {
     // Serial.println("left bigger than right");
     ccw_low();
   }
-  else if (left_avg < 0.1 & right_avg < 0.1)
+  else if ((lr_left_avg < 0.1) & (lr_right_avg < 0.1))
   {
     // Serial.println("zero");
     cw_low();
   } 
-  else if (right_avg - left_avg < 0.1 && right_avg > 0.1) //to stop erroneous stopping when looking at zeros
+  else if (lr_right_avg - lr_left_avg < 0.1 && lr_right_avg > 0.5) //to stop erroneous stopping when looking at zeros
   {
     stop();
     return true;
@@ -79,7 +74,7 @@ bool TurnToFire()
   }
 
   return false;
-  }
+}
 
 bool FireHoming()
 {
@@ -94,7 +89,20 @@ bool FireHoming()
   } else
   {
     PhotoTransistor_Read();
-    error = right_avg - left_avg;
+    //thresholds for transitioning
+    // if (lr_right_avg > threshold || lr_left_avg > threshold)
+    // {
+    //   right - lr_right;
+    //   left = lr_left;
+    // }
+    // else 
+    // //use the shortrange sensors
+    // {
+      
+    // }
+
+    //calculate errors
+    error = lr_right_avg - lr_left_avg;
     error_kp = error * kp;
     //left front, left rear, right rear, right front
     float motor_speeds[4] = {-speed_val+error_kp,-speed_val+error_kp,speed_val+error_kp,speed_val+error_kp};

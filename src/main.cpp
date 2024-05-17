@@ -216,18 +216,36 @@ void loop()
   }
   case RUNNING:
   {
-    // machine_state = running();
-    while(FireHoming() == false)
+    switch (movement_phase)
     {
+    case 0:
+      if(TurnToFire() == true)
+      {
+        movement_phase++;
+      }
+      break;
+    case 1:
+      if(FireHoming() == true)
+      {
+        movement_phase++;
+      }
+      break;
+    case 2:
+      delay(10);
+      break;
+    }
+    // machine_state = running();
+    // while(FireHoming() == false)
+    // {
 
       Serial1.print(">Right Average: ");
-      Serial1.println(right_avg);
+      Serial1.println(lr_right_avg);
       Serial1.print(">Left Average: ");
-      Serial1.println(left_avg);
+      Serial1.println(lr_left_avg);
       Serial1.print(">R-L: " );
-      Serial1.println(right_avg-left_avg);
+      Serial1.println(lr_right_avg-lr_left_avg);
       delay(10);
-    }
+    // }
     break;
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery

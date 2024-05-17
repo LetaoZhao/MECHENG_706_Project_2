@@ -40,7 +40,7 @@ Servo turret_motor;
 // Speed and motor movement
 int speed_val = 500;
 int speed_change;
-int speed_val_low = 150;
+int speed_val_low = 100;
 
 // PID
 int KP = 100;
@@ -114,7 +114,7 @@ float Ki_IR_dif = 0;
 float Kp_GV_dif = 10;
 float Ki_GV_dif = 1;
 
-double voltage_right[10];
-double voltage_left[10];
-double right_avg;
-double left_avg;
+double lr_voltage_right[10];
+double lr_voltage_left[10];
+double lr_right_avg;
+double lr_left_avg;
