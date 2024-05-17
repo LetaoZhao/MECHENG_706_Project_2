@@ -133,10 +133,14 @@ STATE running()
 //   //   }
   }
 
-  PhotoTransistor_Test_Angle();
-  SerialCom->print(right_avg);
-  SerialCom->print(",");
-  SerialCom->println(left_avg);
+  PhotoTransistor_Read();
+  Serial1.print(">Right Average: ");
+  Serial1.println(right_avg);
+  // Serial1.print(" ");
+  Serial1.print(">Left Average: ");
+  Serial1.println(left_avg);
+  Serial1.print(">R-L: " );
+  Serial1.println(right_avg-left_avg);
   delay(100);
 
   return RUNNING;

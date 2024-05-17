@@ -115,7 +115,7 @@ float Kp_GV_dif = 10;
 float Ki_GV_dif = 1;
 
 
-static double voltage_right[3];
-static double voltage_left[3];
-static double right_avg;
-static double left_avg;
+// static double voltage_right[10];
+// static double voltage_left[10];
+// static double right_avg;
+// static double left_avg;

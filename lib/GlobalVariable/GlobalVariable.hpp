@@ -92,7 +92,7 @@ extern float Ki_IR_dif;
 extern float Kp_GV_dif;
 extern float Ki_GV_dif;
 
-static double voltage_right[3];
-static double voltage_left[3];
+static double voltage_right[10];
+static double voltage_left[10];
 static double right_avg;
 static double left_avg;
