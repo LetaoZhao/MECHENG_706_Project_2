@@ -82,6 +82,7 @@ STATE initialising()
   // delay(1000); // One second delay to see the serial const char* "INITIALISING...."
   SerialCom->println("Enabling Motors...");
   enable_motors();
+  enable_turret();
   SerialCom->println("RUNNING STATE...");
 
   resetGyro();
@@ -133,7 +134,7 @@ STATE running()
 //   //   }
   }
 
-  PhotoTransistor_Test_Angle();
+  //PhotoTransistor_Test_Angle();
   SerialCom->print(right_avg);
   SerialCom->print(",");
   SerialCom->println(left_avg);
@@ -221,29 +222,16 @@ void loop()
   }
   case RUNNING:
   {
-   machine_state = running();
-    //SimpleAvoidence();
-    // fast_flash_double_LED_builtin();
-    // delay(1000);
-    enable_turret();
-    // turret_motor.writeMicroseconds(1500);
-    // delay(1000);
-    //digitalWrite(22,HIGH);
-    while (true)
+    //machine_state = running();
+    TurnTurretTo(0);
+    TurnTurretTo(60);
+    TurnTurretTo(0);
+    TurnTurretTo(-60);
+    TurnTurretTo(0);
+    while(true)
     {
-    turret_motor.writeMicroseconds(1500);
-    delay(1000);
-    // turret_motor.writeMicroseconds(1200);
-    // delay(1000);
-    // turret_motor.writeMicroseconds(1500);
-    // delay(1000);
-    // turret_motor.writeMicroseconds(1800);
-    // delay(1000);
-    // turret_motor.writeMicroseconds(2100);
-    // delay(1000);
+      delay(10000);
     }
-    // disable_turret();
-
     break;
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
