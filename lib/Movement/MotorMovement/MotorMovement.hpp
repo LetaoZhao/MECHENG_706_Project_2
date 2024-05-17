@@ -15,3 +15,4 @@ void strafe_left_until(float target_distance_IRs, int F_B, float delay_time);
 void strafe_right_until(float target_distance_IRs, int F_B, float delay_time);
 void ccw_low();
 void cw_low();
+void compute_speed(float (&motor_speeds) [4]);

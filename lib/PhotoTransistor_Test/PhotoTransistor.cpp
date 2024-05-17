@@ -2,6 +2,7 @@
 #include <GlobalVariable.hpp>
 #include <PID_v1.h>
 #include <MotorMovement/MotorMovement.hpp>
+#include <Sonar.hpp>
 
 void PhotoTransistor_Initialize() {
   // put your setup code here, to run once:
@@ -36,20 +37,24 @@ void PhotoTransistor_Read() {
 
   right_avg = 0;
   left_avg = 0;
-  for(int i = 0; i < 3; i++)
+  for(int i = 0; i < 10; i++)
   {
     right_avg += voltage_right[i];
     left_avg += voltage_left[i];
   }
 
-  right_avg = right_avg/3;
-  left_avg = left_avg/3;
+  right_avg = right_avg/10;
+  left_avg = left_avg/10;
 }
 
 
 bool TurnToFire()
 {
   PhotoTransistor_Read();
+  static float error = right_avg-left_avg;
+
+
+
   if(right_avg-left_avg > 0.1)
   {
     // Serial.println("right bigger than left");
@@ -75,4 +80,31 @@ bool TurnToFire()
 
   return false;
   }
+
+bool FireHoming()
+{
+  static float error = 0;
+  static float error_kp;
+  static float kp = 100;
+  bool found_fire = false;
+  if(HC_SR04_range() < 10)
+  {
+    stop();
+    found_fire = true;
+  } else
+  {
+    PhotoTransistor_Read();
+    error = right_avg - left_avg;
+    error_kp = error * kp;
+    // left_font_motor.writeMicroseconds(1500 - saturation(speed_val+error_kp));
+    // left_rear_motor.writeMicroseconds(1500 - saturation(speed_val+error_kp));
+    // right_rear_motor.writeMicroseconds(1500 + saturation(speed_val+error_kp));
+    // right_font_motor.writeMicroseconds(1500 + saturation(speed_val+error_kp));
+    Serial1.print(">Error: ");
+    Serial1.println(error);
+
+  }
+
+  return found_fire;
+}
 

@@ -201,3 +201,25 @@ void cw_low()
     right_rear_motor.writeMicroseconds(1500 + speed_val_low);
     right_font_motor.writeMicroseconds(1500 + speed_val_low);
 }
+
+void compute_speed(float (&motor_speeds) [4])
+{
+    //This function linearly scales the input of the 4 motors such that it
+    float max = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        if (motor_speeds[i] > max)
+        {
+            max = motor_speeds[i];
+        }
+        Serial1.println(motor_speeds[i]);
+    }
+
+    float scale_factor = 500/max;
+
+    for (int i = 0; i<4; i++)
+    {
+        motor_speeds[i] = motor_speeds[i]*scale_factor;
+        Serial1.println(motor_speeds[i]);
+    }
+}
