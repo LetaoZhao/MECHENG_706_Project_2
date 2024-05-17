@@ -35,7 +35,8 @@ void disable_turret()
 
 void enable_turret()
 {
-  turret_motor.attach(turret);
+    pinMode(turret,OUTPUT);
+    turret_motor.attach(turret,900,2100);
 }
 
 void stop_turret()

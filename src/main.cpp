@@ -82,6 +82,7 @@ STATE initialising()
   // delay(1000); // One second delay to see the serial const char* "INITIALISING...."
   SerialCom->println("Enabling Motors...");
   enable_motors();
+  enable_turret();
   SerialCom->println("RUNNING STATE...");
 
   resetGyro();
@@ -225,7 +226,16 @@ void loop()
   }
   case RUNNING:
   {
-    machine_state = running();
+    //machine_state = running();
+    TurnTurretTo(0);
+    TurnTurretTo(60);
+    TurnTurretTo(0);
+    TurnTurretTo(-60);
+    TurnTurretTo(0);
+    while(true)
+    {
+      delay(10000);
+    }
     break;
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
