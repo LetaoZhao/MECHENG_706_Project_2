@@ -133,19 +133,6 @@ STATE running()
 //   //     pos = 0;
 //   //   }
   }
-  PhotoTransistor_Read();
-  while(TurnToFire() == false)
-  {
-  PhotoTransistor_Read();
-  Serial1.print(">Right Average: ");
-  Serial1.println(right_avg);
-  // Serial1.print(" ");
-  Serial1.print(">Left Average: ");
-  Serial1.println(left_avg);
-  Serial1.print(">R-L: " );
-  Serial1.println(right_avg-left_avg);
-  delay(100);
-  }
 
   return RUNNING;
 }
@@ -229,7 +216,19 @@ void loop()
   }
   case RUNNING:
   {
-    machine_state = running();
+    // machine_state = running();
+    while(1)
+    {
+      // TurnToFire();
+      PhotoTransistor_Read();
+      Serial1.print(">Right Average: ");
+      Serial1.println(right_avg);
+      Serial1.print(">Left Average: ");
+      Serial1.println(left_avg);
+      Serial1.print(">R-L: " );
+      Serial1.println(right_avg-left_avg);
+      delay(100);
+    }
     break;
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery

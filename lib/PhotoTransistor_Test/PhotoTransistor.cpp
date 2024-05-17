@@ -49,6 +49,7 @@ void PhotoTransistor_Read() {
 
 bool TurnToFire()
 {
+  PhotoTransistor_Read();
   if(right_avg-left_avg > 0.1)
   {
     // Serial.println("right bigger than left");
