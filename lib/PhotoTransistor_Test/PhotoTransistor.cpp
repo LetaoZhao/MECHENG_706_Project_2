@@ -47,33 +47,31 @@ void PhotoTransistor_Read() {
 }
 
 
-void TurnToFire()
+bool TurnToFire()
 {
-  int found_lightsource = 0;
-  while(found_lightsource != 1)
-  {
-    if(right_avg-left_avg > 0.1)
+  if(right_avg-left_avg > 0.1)
   {
     // Serial.println("right bigger than left");
-    // cw();
+    cw_low();
   }
   else if (left_avg-right_avg > 0.1)
   {
     // Serial.println("left bigger than right");
-    // ccw();
+    ccw_low();
   }
   else if (left_avg < 0.1 & right_avg < 0.1)
   {
     // Serial.println("zero");
-    // cw();
+    cw_low();
   } 
   else if (right_avg - left_avg < 0.1 && right_avg > 0.1) //to stop erroneous stopping when looking at zeros
   {
-    found_lightsource = 1;
+    stop();
+    return true;
     // Serial.println("found it");
     // stop();
   }
-  PhotoTransistor_Read();
-  delay(1);
+
+  return false;
   }
-}
+
