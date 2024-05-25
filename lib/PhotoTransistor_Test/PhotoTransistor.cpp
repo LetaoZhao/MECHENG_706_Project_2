@@ -3,6 +3,8 @@
 #include <PID_v1.h>
 #include <MotorMovement/MotorMovement.hpp>
 #include <Sonar.hpp>
+#include <SimpleAvoidence/SimpleAvoidence.hpp>
+#include <IR_Read.hpp>
 
 void PhotoTransistor_Initialize() {
   // put your setup code here, to run once:
@@ -87,6 +89,59 @@ bool FireHoming()
     stop();
     found_fire = true;
   } else
+  {
+    PhotoTransistor_Read();
+    //thresholds for transitioning
+    // if (lr_right_avg > threshold || lr_left_avg > threshold)
+    // {
+    //   right - lr_right;
+    //   left = lr_left;
+    // }
+    // else 
+    // //use the shortrange sensors
+    // {
+      
+    // }
+
+    //calculate errors
+    error = lr_right_avg - lr_left_avg;
+    error_kp = error * kp;
+    //left front, left rear, right rear, right front
+    float motor_speeds[4] = {-speed_val+error_kp,-speed_val+error_kp,speed_val+error_kp,speed_val+error_kp};
+    compute_speed(motor_speeds);
+    left_font_motor.writeMicroseconds(1500 + motor_speeds[0]);
+    left_rear_motor.writeMicroseconds(1500 + motor_speeds[1]);
+    right_rear_motor.writeMicroseconds(1500 + motor_speeds[2]);
+    right_font_motor.writeMicroseconds(1500 + motor_speeds[3]);
+    Serial1.print(">Error: ");
+    Serial1.println(error_kp);
+
+  }
+
+  return found_fire;
+}
+
+
+bool FireHoming_Avoidence()
+{
+  static float error = 0;
+  static float error_kp;
+  static float kp = 1000;
+  bool found_fire = false;
+  if((HC_SR04_range() < 10) || IR_sensorReadDistance("4102") < 100 || IR_sensorReadDistance("4103") < 100)
+  {
+    PhotoTransistor_Read();
+    if((lr_right_avg > 4)||(lr_left_avg > 4))
+    {
+      stop();
+      found_fire = true;
+    }
+    else
+    {
+      SimpleAvoidence();
+    }
+  } 
+  else
   {
     PhotoTransistor_Read();
     //thresholds for transitioning

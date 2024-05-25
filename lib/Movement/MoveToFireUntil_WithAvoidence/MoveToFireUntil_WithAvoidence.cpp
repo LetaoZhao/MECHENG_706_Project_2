@@ -9,89 +9,55 @@
 #include <PhotoTransistor.hpp>
 
 
-void MoveToFireUntil_WithAvoidence(float TargetDistance, double Power)
+bool MoveToFireUntil_WithAvoidence()
 {
-    //
-    bool isRunning = 1;
-    enum Moving_Machine_States{
-        Forward,
-        Avoiding
-    };
-    Moving_Machine_States Current_State = Forward;
+    // bool isRunning = 1;
+    // bool startAvoidence = 0;
 
-    float SonarDistance = HC_SR04_range(); //cm
+    // float left_distance_IR = 0.0; //voltage (V)
+    // float right_distance_IR = 0.0; //voltage (V)
 
-    int forward_speed_value = 0;
-    
-
-
-
-    while(isRunning)
-    {
-        switch(Current_State)
-        {
-            case Forward:
-            {
-                //forward
-                PhotoTransistor_Read(); //refresh IR readings
-
-                //PID needed
-                forward_speed_value = (int)0;  ///
-
-                left_font_motor.writeMicroseconds(1500 + forward_speed_value);    //-
-                left_rear_motor.writeMicroseconds(1500 + forward_speed_value);    //-
-                right_rear_motor.writeMicroseconds(1500 + forward_speed_value);   //+
-                right_font_motor.writeMicroseconds(1500 + forward_speed_value);   //+
-
-                //detect conditions
-                SonarDistance = HC_SR04_range();
-                if(SonarDistance < TargetDistance) //if there is an object
-                {
-                    if(1)//IR say it's not fire)
-                    {
-                        stop(); //stop moving
-                        Current_State = Avoiding; //avoidance
-                    }
-                    else if(2)//IR say this is a fire)
-                    {
-                        stop(); //stop moving
-                        isRunning = 0; //function finished
-                    }
-                }
-                break;
-            }
-            case Avoiding:
-            {
-                //
-                break;
-            }
-        }
-    }
-    
-
-
-
-
-
-
-
-
-
-    //initial
-    int initial_speed_valure = 5*Power;
-    left_font_motor.writeMicroseconds(1500 - initial_speed_valure);
-    left_rear_motor.writeMicroseconds(1500 - initial_speed_valure);
-    right_rear_motor.writeMicroseconds(1500 + initial_speed_valure);
-    right_font_motor.writeMicroseconds(1500 + initial_speed_valure);
-
-    
-
-
-    //
-
-    // //main loop
-    // while(SonarDistance > TargetDistance)||(//IR say not reach fire)
+    // while(isRunning) //main loop
     // {
-    //     PhotoTransistor_Read();
-    // }
+        //check if there is an object in front of the robot
+        // left_distance_IR = analogRead(AXXXXXX) * 0.0049; //5V 10Bit ADC 
+        // right_distance_IR = analogRead(AXXXXXX) * 0.0049; //5V 10Bit ADC 
+        // if((left_distance_IR < XXXXXXX)||(left_distance_IR < XXXXXXX)||(HC_SR04_range() < 10))
+        // {
+        //     //check if this is fire
+        //     PhotoTransistor_Read();
+        //     if((lr_right_avg < XXXXXXX)||(lr_left_avg < XXXXXXX))
+            // {
+            //     return true; //if yes, function ended
+            // }
+            // else 
+            // {
+            //     //start avoidence
+            //     startAvoidence = true; 
+            //     while(startAvoidence)
+            //     {
+                    // left_font_motor.writeMicroseconds(1500 + motor_speeds[0]);
+                    // left_rear_motor.writeMicroseconds(1500 + motor_speeds[1]);
+                    // right_rear_motor.writeMicroseconds(1500 + motor_speeds[2]);
+//                     // right_font_motor.writeMicroseconds(1500 + motor_speeds[3]);
+
+
+
+
+
+//                     //cw+
+//                     //ccw- 
+//                 }
+//             }
+//         }
+
+//         if(startAvoidence)
+//     }
+
+    
+//     if()
+
+
+
+
 }

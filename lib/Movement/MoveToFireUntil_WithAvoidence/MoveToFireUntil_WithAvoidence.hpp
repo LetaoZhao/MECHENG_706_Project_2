@@ -1,1 +1,1 @@
-void MoveToFireUntil_WithAvoidence(float TargetDistance);
+bool MoveToFireUntil_WithAvoidence();
