@@ -67,8 +67,8 @@ void ObjectAvoidence(){
                 stop();
                 delay(1000);
                 
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
-                    avoidenceState = 100;
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
+                    avoidenceState = 99;
                     
                 }
                 else{
@@ -89,7 +89,7 @@ void ObjectAvoidence(){
                 stop();
                 delay(1000);
                 
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
                     avoidenceState = 0;
                 }
                 else{
@@ -100,12 +100,17 @@ void ObjectAvoidence(){
 
 
 
+            case 99:
+                cw();
+                delay(turn90Mills + 300);
+                avoidenceState = 100;
+                break;
 
             case 100:
-                ccw();
-                delay(2*turn90Mills);
+                cw();
+                delay(turn90Mills);
                 stop();
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
                     Serial.print("both sides detected");
                 }
                 else{
@@ -125,11 +130,11 @@ void ObjectAvoidence(){
                 stop();
                 delay(1000);
                 
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
                     avoidenceState = 100;
                 }
                 else{
-                    avoidenceState = 999;//move a bit forward
+                    avoidenceState = 199;//move a bit forward
                 }
                 break;
 
@@ -142,6 +147,14 @@ void ObjectAvoidence(){
                 isReached = true;
                 break;
 
+            case 199:
+                reverse();
+                delay(goStraightTime);
+                ccw();
+                delay(200);
+                stop();
+                isReached = true;
+                break;
             
 
                 
