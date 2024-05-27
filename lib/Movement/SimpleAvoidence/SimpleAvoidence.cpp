@@ -4,6 +4,7 @@
 #include <GyroTurn/GyroTurn.hpp>
 #include <PhotoTransistor.hpp>
 #include <IR_Read.hpp>
+#include <GlobalVariable.hpp>
 
 void SimpleAvoidence()
 {
@@ -56,7 +57,6 @@ void ObjectAvoidence(){
 
 
     while(!isReached){
-        Serial.print(avoidenceState);
 
         unsigned long int currentMills = millis();
         unsigned long int startMills;

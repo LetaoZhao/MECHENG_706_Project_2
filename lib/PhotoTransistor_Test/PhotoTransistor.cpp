@@ -58,12 +58,12 @@ void PhotoTransistor_Read() {
 bool TurnToFire()
 {
   PhotoTransistor_Read();
-  if(lr_right_avg-lr_left_avg > 0.1)
+  if(lr_right_avg-lr_left_avg > 0.3)
   {
     // Serial.println("right bigger than left");
     cw_low();
   }
-  else if (lr_left_avg-lr_right_avg > 0.1)
+  else if (lr_left_avg-lr_right_avg > 0.3)
   {
     // Serial.println("left bigger than right");
     ccw_low();
@@ -180,6 +180,7 @@ bool FireHoming_Avoidence()
 
   }
 
+  Serial.println(lr_mid_avg);
   // Serial.println(lr_left_avg);
   // Serial.println(lr_right_avg);
 
