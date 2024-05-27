@@ -50,33 +50,46 @@ void SimpleAvoidence()
 void ObjectAvoidence(){
     bool isReached = false;
     int avoidenceState = 0;
+    int turn90Mills = 600;
+
+    int goStraightTime = 600;
 
 
     while(!isReached){
+        Serial.print(avoidenceState);
+
+        unsigned long int currentMills = millis();
+        unsigned long int startMills;
         switch (avoidenceState){
             case 0:
-                GyroTurn1(90);
+                ccw();
+                delay(turn90Mills);
+                stop();
                 delay(1000);
                 
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("4102") < 100 || IR_sensorReadDistance("4103") < 100){
+                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
                     avoidenceState = 100;
+                    
                 }
                 else{
                     avoidenceState = 1;
+                    startMills = currentMills;
                 }
                 break;
             case 1:
                 reverse();
-                delay(300);
+                delay(goStraightTime);
                 stop();
                 avoidenceState = 2;
                 break;
 
             case 2:
-                GyroTurn1(-90);
+                cw();
+                delay(turn90Mills);
+                stop();
                 delay(1000);
                 
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("4102") < 100 || IR_sensorReadDistance("4103") < 100){
+                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
                     avoidenceState = 0;
                 }
                 else{
@@ -89,9 +102,11 @@ void ObjectAvoidence(){
 
 
             case 100:
-                GyroTurn1(180);
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("4102") < 100 || IR_sensorReadDistance("4103") < 100){
-                    Serial1.print("both sides detected");
+                ccw();
+                delay(2*turn90Mills);
+                stop();
+                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
+                    Serial.print("both sides detected");
                 }
                 else{
                     avoidenceState = 101;
@@ -99,16 +114,18 @@ void ObjectAvoidence(){
                 break;
             case 101:
                 reverse();
-                delay(300);
+                delay(goStraightTime);
                 stop();
                 avoidenceState = 102;
                 break;
 
             case 102:
-                GyroTurn1(90);
+                ccw();
+                delay(turn90Mills);
+                stop();
                 delay(1000);
                 
-                if((HC_SR04_range() < 10) || IR_sensorReadDistance("4102") < 100 || IR_sensorReadDistance("4103") < 100){
+                if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100){
                     avoidenceState = 100;
                 }
                 else{
@@ -120,7 +137,7 @@ void ObjectAvoidence(){
 
             case 999:
                 reverse();
-                delay(300);
+                delay(goStraightTime);
                 stop();
                 isReached = true;
                 break;

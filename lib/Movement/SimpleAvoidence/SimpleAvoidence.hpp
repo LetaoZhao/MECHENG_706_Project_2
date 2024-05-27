@@ -1,1 +1,2 @@
 void SimpleAvoidence();
+void ObjectAvoidence();

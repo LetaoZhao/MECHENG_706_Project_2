@@ -33,8 +33,8 @@ void PhotoTransistor_Read() {
     lr_voltage_right[i] = lr_voltage_right[i-1];
   }
 
-  lr_voltage_right[0] = analogRead(A15) * 0.0049; //5V 10Bit ADC 
-  lr_voltage_left[0] = analogRead(A14) * 0.0049; //5V 10Bit ADC 
+  lr_voltage_right[0] = analogRead(A15) * 0.0049; //5V 10Bit ADC
+  lr_voltage_left[0] = analogRead(A14) * 0.0049; //5V 10Bit ADC
 
   lr_right_avg = 0;
   lr_left_avg = 0;
@@ -66,7 +66,7 @@ bool TurnToFire()
   {
     // Serial.println("zero");
     cw_low();
-  } 
+  }
   else if (lr_right_avg - lr_left_avg < 0.1 && lr_right_avg > 0.5) //to stop erroneous stopping when looking at zeros
   {
     stop();
@@ -97,10 +97,10 @@ bool FireHoming()
     //   right - lr_right;
     //   left = lr_left;
     // }
-    // else 
+    // else
     // //use the shortrange sensors
     // {
-      
+
     // }
 
     //calculate errors
@@ -128,19 +128,21 @@ bool FireHoming_Avoidence()
   static float error_kp;
   static float kp = 1000;
   bool found_fire = false;
-  if((HC_SR04_range() < 10) || IR_sensorReadDistance("4102") < 100 || IR_sensorReadDistance("4103") < 100)
+  if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 100 || IR_sensorReadDistance("41_03") < 100)
   {
+    
     PhotoTransistor_Read();
-    if((lr_right_avg > 4)||(lr_left_avg > 4))
+    if((lr_right_avg > 0.45)||(lr_left_avg > 0.45))
     {
       stop();
       found_fire = true;
     }
     else
     {
-      SimpleAvoidence();
+      ObjectAvoidence();
     }
-  } 
+        
+  }
   else
   {
     PhotoTransistor_Read();
@@ -150,10 +152,10 @@ bool FireHoming_Avoidence()
     //   right - lr_right;
     //   left = lr_left;
     // }
-    // else 
+    // else
     // //use the shortrange sensors
     // {
-      
+
     // }
 
     //calculate errors
@@ -169,7 +171,11 @@ bool FireHoming_Avoidence()
     Serial1.print(">Error: ");
     Serial1.println(error_kp);
 
+
   }
+
+  // Serial.println(lr_left_avg);
+  // Serial.println(lr_right_avg);
 
   return found_fire;
 }

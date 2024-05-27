@@ -216,19 +216,21 @@ void loop()
   }
   case RUNNING:
   {
+    // Serial.print(movement_phase);
     switch (movement_phase)
     {
     case 0:
-      if(TurnToFire() == true)
+      if(FireHoming_Avoidence() == true)
       {
         movement_phase++;
       }
       break;
     case 1:
-      if(FireHoming() == true)
-      {
-        movement_phase++;
-      }
+      // if(FireHoming_Avoidence() == true)
+      // {
+      //   movement_phase++;
+      // }
+      movement_phase++;
       break;
     case 2:
       delay(10);
