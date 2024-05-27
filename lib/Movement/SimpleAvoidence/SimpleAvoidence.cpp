@@ -150,8 +150,9 @@ void ObjectAvoidence(){
             case 199:
                 reverse();
                 delay(goStraightTime);
-                ccw();
-                delay(200);
+                while(TurnToFire() == false){
+                    delay(10);
+                }
                 stop();
                 isReached = true;
                 break;

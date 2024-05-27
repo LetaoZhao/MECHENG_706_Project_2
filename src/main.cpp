@@ -220,20 +220,20 @@ void loop()
     switch (movement_phase)
     {
     case 0:
+      if(TurnToFire() == true){
+        movement_phase ++;
+      }
+      movement_phase++;
+      
+      break;
+    case 1:
       if(FireHoming_Avoidence() == true)
       {
         movement_phase++;
       }
       break;
-    case 1:
-      // if(FireHoming_Avoidence() == true)
-      // {
-      //   movement_phase++;
-      // }
-      movement_phase++;
-      break;
     case 2:
-      delay(10);
+      digitalWrite(45,HIGH);
       break;
     }
     // machine_state = running();
