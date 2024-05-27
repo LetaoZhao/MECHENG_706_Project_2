@@ -217,8 +217,8 @@ void loop()
   }
   case RUNNING:
   {
-    MoveToFireUntil_WithAvoidence();
-    while(true) {}
+    //MoveToFireUntil_WithAvoidence();
+    while(true) {delay(10000);}
     // Serial.print(movement_phase);
     switch (movement_phase)
     {

@@ -34,8 +34,8 @@ bool MoveToFireUntil_WithAvoidence()
     bool isRunning = 1;
     bool startAvoidence = 0;
 
-//     float left_distance_IR = 0.0; //voltage (V)
-//     float right_distance_IR = 0.0; //voltage (V)
+    float left_distance_IR = 0.0; //voltage (V)
+    float right_distance_IR = 0.0; //voltage (V)
 
     static float error = 0;
     static float error_kp;
