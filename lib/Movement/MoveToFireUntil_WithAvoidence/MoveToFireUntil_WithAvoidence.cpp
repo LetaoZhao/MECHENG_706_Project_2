@@ -50,7 +50,7 @@ bool MoveToFireUntil_WithAvoidence()
         {
             //check if this is fire
             PhotoTransistor_Read();
-            if((lr_right_avg < 0.45)||(lr_left_avg < 0.45))
+            if((lr_right_avg > 4)||(lr_left_avg > 4))
             {
                 stop();
                 isRunning  = 0;

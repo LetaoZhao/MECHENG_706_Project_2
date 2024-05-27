@@ -195,6 +195,7 @@ void setup()
   delay(1000);
   SerialCom->println("Setup....");
   Serial1.begin(115200);
+  Serial.begin(115200);
 
   // setting up gyro
   resetGyro();
@@ -218,15 +219,9 @@ void loop()
   }
   case RUNNING:
   {
-    //MoveToFireUntil_WithAvoidence();
-    while(true)
-    {
-    start_fan();
-    delay(5000);
-    stop_fan();
-    delay(5000);
-    }
-    while(true) {delay(10000);}
+    movement_phase = 1;
+    // MoveToFireUntil_WithAvoidence();
+    // while(true) {cw(); delay(10000);}
     // Serial.print(movement_phase);
     switch (movement_phase)
     {

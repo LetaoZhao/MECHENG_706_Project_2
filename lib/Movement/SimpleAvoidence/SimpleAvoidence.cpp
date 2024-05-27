@@ -55,6 +55,8 @@ void ObjectAvoidence(){
 
     int goStraightTime = 600;
 
+    int temp_time = 0;
+
 
     while(!isReached){
 
@@ -68,7 +70,7 @@ void ObjectAvoidence(){
                 stop();
                 delay(1000);
                 
-                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <200 || IR_sensorReadDistance("41_03") 200){
                     //if left has object, turn right 180 degree
                     avoidenceState = 99;
                     
@@ -80,9 +82,18 @@ void ObjectAvoidence(){
                 break;
             case 1:
             //move forward
-                reverse();
-                delay(goStraightTime);
+                temp_time = millis();
+                while((millis() - temp_time) <= goStraightTime*2)
+                {
+                    reverse();
+                    if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <200 || IR_sensorReadDistance("41_03") <200)
+                    {
+                        stop();
+                        temp_time = temp_time - goStraightTime*2;
+                    }
+                }
                 stop();
+
                 avoidenceState = 2;
                 break;
 
@@ -107,7 +118,7 @@ void ObjectAvoidence(){
             case 99:
                 //turn right 90 degree, it should face the fire
                 cw();
-                delay(turn90Mills + 300);
+                delay(turn90Mills);
                 avoidenceState = 100;
                 break;
 
@@ -116,7 +127,7 @@ void ObjectAvoidence(){
                 cw();
                 delay(turn90Mills);
                 stop();
-                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <200 || IR_sensorReadDistance("41_03") <200){
                     Serial.print("both sides detected");
                 }
                 else{
@@ -125,8 +136,16 @@ void ObjectAvoidence(){
                 break;
             case 101:
                 //move forward
-                reverse();
-                delay(goStraightTime);
+                temp_time = millis();
+                while((millis() - temp_time) <= goStraightTime*2)
+                {
+                    reverse();
+                    if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <200 || IR_sensorReadDistance("41_03") <200)
+                    {
+                        stop();
+                        temp_time = temp_time - goStraightTime*2;
+                    }
+                }
                 stop();
                 avoidenceState = 102;
                 break;
@@ -138,7 +157,7 @@ void ObjectAvoidence(){
                 stop();
                 delay(1000);
                 
-                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
+                if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <200 || IR_sensorReadDistance("41_03") <200){
                     //if there is still an object  in front, redo the whole state 100-102 to move sidewards again
                     avoidenceState = 100;
                 }
@@ -151,14 +170,32 @@ void ObjectAvoidence(){
 
             case 999:
                 //move pass the obstacle
-                reverse();
+                temp_time = millis();
+                while((millis() - temp_time) <= goStraightTime*2)
+                {
+                    reverse();
+                    if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150)
+                    {
+                        stop();
+                        temp_time = temp_time - goStraightTime*2;
+                    }
+                }
                 delay(goStraightTime);
                 stop();
                 isReached = true;
                 break;
 
             case 199:
-                reverse();
+                temp_time = millis();
+                while((millis() - temp_time) <= goStraightTime*2)
+                {
+                    reverse();
+                    if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150)
+                    {
+                        stop();
+                        temp_time = temp_time - goStraightTime*2;
+                    }
+                }
                 delay(goStraightTime);
                 while(TurnToFire() == false){
                     delay(10);
