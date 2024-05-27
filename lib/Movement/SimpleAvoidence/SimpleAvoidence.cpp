@@ -62,12 +62,14 @@ void ObjectAvoidence(){
         unsigned long int startMills;
         switch (avoidenceState){
             case 0:
+            //turn left 90 degree
                 ccw();
                 delay(turn90Mills);
                 stop();
                 delay(1000);
                 
                 if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
+                    //if left has object, turn right 180 degree
                     avoidenceState = 99;
                     
                 }
@@ -77,6 +79,7 @@ void ObjectAvoidence(){
                 }
                 break;
             case 1:
+            //move forward
                 reverse();
                 delay(goStraightTime);
                 stop();
@@ -84,6 +87,7 @@ void ObjectAvoidence(){
                 break;
 
             case 2:
+            //turn right 90 degree
                 cw();
                 delay(turn90Mills);
                 stop();
@@ -101,12 +105,14 @@ void ObjectAvoidence(){
 
 
             case 99:
+                //turn right 90 degree, it should face the fire
                 cw();
                 delay(turn90Mills + 300);
                 avoidenceState = 100;
                 break;
 
             case 100:
+                //turn right 90 degree
                 cw();
                 delay(turn90Mills);
                 stop();
@@ -118,6 +124,7 @@ void ObjectAvoidence(){
                 }
                 break;
             case 101:
+                //move forward
                 reverse();
                 delay(goStraightTime);
                 stop();
@@ -125,12 +132,14 @@ void ObjectAvoidence(){
                 break;
 
             case 102:
+                //turn left 90 degree
                 ccw();
                 delay(turn90Mills);
                 stop();
                 delay(1000);
                 
                 if((HC_SR04_range() <15) || IR_sensorReadDistance("41_02") <150 || IR_sensorReadDistance("41_03") <150){
+                    //if there is still an object  in front, redo the whole state 100-102 to move sidewards again
                     avoidenceState = 100;
                 }
                 else{
@@ -141,6 +150,7 @@ void ObjectAvoidence(){
 
 
             case 999:
+                //move pass the obstacle
                 reverse();
                 delay(goStraightTime);
                 stop();
