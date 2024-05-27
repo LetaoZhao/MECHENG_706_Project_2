@@ -18,6 +18,7 @@ void PhotoTransistor_Initialize() {
   {
     lr_voltage_left[i] = 0;
     lr_voltage_right[i] = 0;
+    lr_voltage_mid[i] = 0;
   }
 
   return;
@@ -31,21 +32,26 @@ void PhotoTransistor_Read() {
   {
     lr_voltage_left[i] = lr_voltage_left[i-1];
     lr_voltage_right[i] = lr_voltage_right[i-1];
+    lr_voltage_mid[i] = lr_voltage_mid[i-1];
   }
 
   lr_voltage_right[0] = analogRead(A15) * 0.0049; //5V 10Bit ADC
   lr_voltage_left[0] = analogRead(A14) * 0.0049; //5V 10Bit ADC
+  lr_voltage_mid[0] = analogRead(A12) * 0.0049;
 
   lr_right_avg = 0;
   lr_left_avg = 0;
+  lr_mid_avg = 0;
   for(int i = 0; i < 10; i++)
   {
     lr_right_avg += lr_voltage_right[i];
     lr_left_avg += lr_voltage_left[i];
+    lr_mid_avg += lr_voltage_mid[i];
   }
 
   lr_right_avg = lr_right_avg/10;
   lr_left_avg = lr_left_avg/10;
+  lr_mid_avg = lr_mid_avg/10;
 }
 
 
@@ -132,7 +138,7 @@ bool FireHoming_Avoidence()
   {
     
     PhotoTransistor_Read();
-    if((lr_right_avg > 0.45)||(lr_left_avg > 0.45))
+    if(lr_mid_avg > 4)
     {
       stop();
       found_fire = true;
