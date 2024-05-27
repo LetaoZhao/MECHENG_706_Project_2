@@ -238,3 +238,18 @@ void compute_speed(float (&motor_speeds) [4])
         // Serial1.println(motor_speeds[i]);
     }
 }
+
+void enable_fan()
+{
+    pinMode(21, OUTPUT);
+}
+
+void start_fan()
+{
+    digitalWrite(21,HIGH);
+}
+
+void stop_fan()
+{
+    digitalWrite(21,LOW);
+}

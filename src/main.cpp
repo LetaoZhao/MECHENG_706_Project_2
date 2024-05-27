@@ -84,6 +84,7 @@ STATE initialising()
   SerialCom->println("Enabling Motors...");
   enable_motors();
   enable_turret();
+  enable_fan();
   SerialCom->println("RUNNING STATE...");
 
   resetGyro();
@@ -218,6 +219,13 @@ void loop()
   case RUNNING:
   {
     //MoveToFireUntil_WithAvoidence();
+    while(true)
+    {
+    start_fan();
+    delay(5000);
+    stop_fan();
+    delay(5000);
+    }
     while(true) {delay(10000);}
     // Serial.print(movement_phase);
     switch (movement_phase)
