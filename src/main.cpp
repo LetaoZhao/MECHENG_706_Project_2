@@ -223,7 +223,7 @@ void loop()
       if(TurnToFire() == true){
         movement_phase ++;
       }
-      movement_phase++;
+      // movement_phase++;
       
       break;
     case 1:

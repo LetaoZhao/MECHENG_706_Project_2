@@ -9,50 +9,50 @@
 #include <PhotoTransistor.hpp>
 
 
-bool MoveToFireUntil_WithAvoidence()
-{
-    bool isRunning = 1;
-    bool startAvoidence = 0;
+// bool MoveToFireUntil_WithAvoidence()
+// {
+//     bool isRunning = 1;
+//     bool startAvoidence = 0;
 
-    float left_distance_IR = 0.0; //voltage (V)
-    float right_distance_IR = 0.0; //voltage (V)
+//     float left_distance_IR = 0.0; //voltage (V)
+//     float right_distance_IR = 0.0; //voltage (V)
 
-    while(isRunning) //main loop
-    {
-        //check if there is an object in front of the robot
-        left_distance_IR = analogRead(AXXXXXX) * 0.0049; //5V 10Bit ADC 
-        right_distance_IR = analogRead(AXXXXXX) * 0.0049; //5V 10Bit ADC 
-        if((left_distance_IR < XXXXXXX)||(left_distance_IR < XXXXXXX)||(HC_SR04_range() < 10))
-        {
-            //check if this is fire
-            PhotoTransistor_Read();
-            if((lr_right_avg < XXXXXXX)||(lr_left_avg < XXXXXXX))
-            {
-                return true; //if yes, function ended
-            }
-            else 
-            {
-                //start avoidence
-                startAvoidance = true; 
-                while(startAvoidence)
-                {
-                    int speed_vel = Calculate_Turning_Potential();
-                    left_font_motor.writeMicroseconds(1500 + speed_vel);
-                    left_rear_motor.writeMicroseconds(1500 + speed_vel);
-                    right_rear_motor.writeMicroseconds(1500 +speed_vel);
-                    right_font_motor.writeMicroseconds(1500 + speed_vel);
-                    //cw+
-                    //ccw- 
-                }
-            }
-        }
+//     while(isRunning) //main loop
+//     {
+//         //check if there is an object in front of the robot
+//         left_distance_IR = analogRead(AXXXXXX) * 0.0049; //5V 10Bit ADC 
+//         right_distance_IR = analogRead(AXXXXXX) * 0.0049; //5V 10Bit ADC 
+//         if((left_distance_IR < XXXXXXX)||(left_distance_IR < XXXXXXX)||(HC_SR04_range() < 10))
+//         {
+//             //check if this is fire
+//             PhotoTransistor_Read();
+//             if((lr_right_avg < XXXXXXX)||(lr_left_avg < XXXXXXX))
+//             {
+//                 return true; //if yes, function ended
+//             }
+//             else 
+//             {
+//                 //start avoidence
+//                 startAvoidance = true; 
+//                 while(startAvoidence)
+//                 {
+//                     int speed_vel = Calculate_Turning_Potential();
+//                     left_font_motor.writeMicroseconds(1500 + speed_vel);
+//                     left_rear_motor.writeMicroseconds(1500 + speed_vel);
+//                     right_rear_motor.writeMicroseconds(1500 +speed_vel);
+//                     right_font_motor.writeMicroseconds(1500 + speed_vel);
+//                     //cw+
+//                     //ccw- 
+//                 }
+//             }
+//         }
 
-    }
+//     }
 
     
-    if()
+//     // if()
 
-}
+// }
 
 
 int Calculate_Turning_Potential()
