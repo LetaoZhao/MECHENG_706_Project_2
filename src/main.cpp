@@ -13,6 +13,7 @@
 #include <SimpleAvoidence/SimpleAvoidence.hpp>
 #include <TurnTurretTo/TurnTurretTo.hpp>
 #include <PhotoTransistor.hpp>
+#include <MoveToFireUntil_WithAvoidence/MoveToFireUntil_WithAvoidence.hpp>
 // import libraries====================================================================================================end
 
 // variables declearation============================================================================================start
@@ -216,6 +217,8 @@ void loop()
   }
   case RUNNING:
   {
+    MoveToFireUntil_WithAvoidence();
+    while(true) {}
     // Serial.print(movement_phase);
     switch (movement_phase)
     {

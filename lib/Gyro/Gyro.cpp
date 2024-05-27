@@ -70,37 +70,37 @@ double Kp_Turn = 8, Ki_Turn = 0, Kd_Turn = 0;
 // To GO CCW use REVERSE and CCW
 PID myPID(&currentAngle, &Output, &Setpoint, Kp_Turn, Ki_Turn, Kd_Turn, DIRECT);
 
-void GyroTurn(double target)
-{
-  static unsigned long previous_millis;
-  static char msg;
-  static double speed_value;
-  static unsigned long start_turn;
-  static double tolerance = 5;
-  static double error = 0;
-  static double cumm_error = 0;
+// void GyroTurn(double target)
+// {
+//   static unsigned long previous_millis;
+//   static char msg;
+//   static double speed_value;
+//   static unsigned long start_turn;
+//   static double tolerance = 5;
+//   static double error = 0;
+//   static double cumm_error = 0;
 
-  while (currentAngle < (target - tolerance) || currentAngle > (target + tolerance))
-  {
-    if (millis() - previous_millis > 50)
-    {
-      readGyro1();
-      error = target - currentAngle;
-      cumm_error += error;
-      speed_value = error * Kp_Turn + cumm_error * Ki_Turn;
+//   while (currentAngle < (target - tolerance) || currentAngle > (target + tolerance))
+//   {
+//     if (millis() - previous_millis > 50)
+//     {
+//       readGyro1();
+//       error = target - currentAngle;
+//       cumm_error += error;
+//       speed_value = error * Kp_Turn + cumm_error * Ki_Turn;
 
-      left_font_motor.writeMicroseconds(1500 - saturation(speed_value));
-      left_rear_motor.writeMicroseconds(1500 - saturation(speed_value));
-      right_rear_motor.writeMicroseconds(1500 - saturation(speed_value));
-      right_font_motor.writeMicroseconds(1500 - saturation(speed_value));
+//       left_font_motor.writeMicroseconds(1500 - saturation(speed_value));
+//       left_rear_motor.writeMicroseconds(1500 - saturation(speed_value));
+//       right_rear_motor.writeMicroseconds(1500 - saturation(speed_value));
+//       right_font_motor.writeMicroseconds(1500 - saturation(speed_value));
 
-      // Serial1.println(currentAngle);
-      previous_millis = millis();
-      ReadAllSensor();
-      // Serial1.println(saturation(100+speed_value));
-    }
-  }
-  // Serial1.println("Stopping");
-  stop();
-  return;
-}
+//       // Serial1.println(currentAngle);
+//       previous_millis = millis();
+//       ReadAllSensor();
+//       // Serial1.println(saturation(100+speed_value));
+//     }
+//   }
+//   // Serial1.println("Stopping");
+//   stop();
+//   return;
+// }

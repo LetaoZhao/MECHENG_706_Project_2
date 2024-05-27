@@ -8,6 +8,26 @@
 #include <IR_Read.hpp>
 #include <PhotoTransistor.hpp>
 
+int Calculate_Turning_Potential()
+{
+    //return speed value to turn
+    double Dis_4102 = IR_sensorReadDistance("41_02");
+    double Dis_4103 = IR_sensorReadDistance("41_03");
+    double Dis_Sonar = HC_SR04_range();
+    if(Dis_4102 > 400) {Dis_4102 = 400;}
+    if(Dis_4103 > 400) {Dis_4103 = 400;}
+    if(Dis_Sonar > 15) {Dis_Sonar = 15;}
+
+    double left_potential = (15 - Dis_Sonar)*5 + (200 - Dis_4102);
+    double right_potential = (15 - Dis_Sonar)*5 + (200 - Dis_4103);
+
+    return (int)(500*(left_potential - right_potential)/275);
+}
+
+void Fire_Track_Turret()
+{
+    //
+}
 
 bool MoveToFireUntil_WithAvoidence()
 {
@@ -32,6 +52,7 @@ bool MoveToFireUntil_WithAvoidence()
             PhotoTransistor_Read();
             if((lr_right_avg < 0.45)||(lr_left_avg < 0.45))
             {
+                stop();
                 isRunning  = 0;
                 return true; //if yes, function ended
             }
@@ -87,21 +108,4 @@ bool MoveToFireUntil_WithAvoidence()
         //Serial1.print(">Error: ");
         //Serial1.println(error_kp);
     }
-}
-
-
-int Calculate_Turning_Potential()
-{
-    //return speed value to turn
-    double Dis_4102 = IR_sensorReadDistance("41_02");
-    double Dis_4103 = IR_sensorReadDistance("41_03");
-    double Dis_Sonar = HC_SR04_range();
-    if(Dis_4102 > 400) {Dis_4102 = 400;}
-    if(Dis_4103 > 400) {Dis_4103 = 400;}
-    if(Dis_Sonar > 15) {Dis_Sonar = 15;}
-
-    double left_potential = (15 - Dis_Sonar)*5 + (200 - Dis_4102);
-    double right_potential = (15 - Dis_Sonar)*5 + (200 - Dis_4103);
-
-    return (int)(500*(left_potential - right_potential)/275);
 }
