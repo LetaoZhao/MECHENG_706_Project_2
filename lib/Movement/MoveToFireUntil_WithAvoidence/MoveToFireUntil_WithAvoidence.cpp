@@ -7,6 +7,7 @@
 #include <SerialComs.hpp>
 #include <IR_Read.hpp>
 #include <PhotoTransistor.hpp>
+#include <TurnTurretTo/TurnTurretTo.hpp>
 
 int Calculate_Turning_Potential()
 {
@@ -18,10 +19,18 @@ int Calculate_Turning_Potential()
     if(Dis_4103 > 400) {Dis_4103 = 400;}
     if(Dis_Sonar > 15) {Dis_Sonar = 15;}
 
-    double left_potential = (15 - Dis_Sonar)*5 + (200 - Dis_4102);
-    double right_potential = (15 - Dis_Sonar)*5 + (200 - Dis_4103);
+    int sonar_potemtial = (int)((15 - Dis_Sonar)*200);
+    double left_potential = sonar_potemtial + (200 - Dis_4102)*10;
+    double right_potential = sonar_potemtial + (200 - Dis_4103)*10;
 
-    return (int)(500*(left_potential - right_potential)/275);
+    int speed_vel = (int)(left_potential - right_potential);
+    if(speed_vel < 0) {speed_vel -= sonar_potemtial;}
+    else {speed_vel += sonar_potemtial;}
+    
+    if(speed_vel > 500) {speed_vel = 500;}
+    if(speed_vel < -500) {speed_vel = -500;}
+
+    return speed_vel;
 }
 
 void Fire_Track_Turret()
@@ -32,7 +41,7 @@ void Fire_Track_Turret()
 bool MoveToFireUntil_WithAvoidence()
 {
     bool isRunning = 1;
-    bool startAvoidence = 0;
+    bool startAvoidance = 0;
 
     float left_distance_IR = 0.0; //voltage (V)
     float right_distance_IR = 0.0; //voltage (V)
@@ -41,13 +50,20 @@ bool MoveToFireUntil_WithAvoidence()
     static float error_kp;
     static float kp = 1000;
 
+    int time_count = 0;
+    int turret_count = -1;
+
+    int speed_vel = 0;
+
     while(isRunning) //main loop
     {
         //check if there is an object in front of the robot
         left_distance_IR = IR_sensorReadDistance("41_02");
         right_distance_IR = IR_sensorReadDistance("41_03");
-        if((left_distance_IR < 150)||(left_distance_IR < 150)||(HC_SR04_range() < 10))
+        if((left_distance_IR < 150)||(right_distance_IR < 150)||(HC_SR04_range() < 15))
         {
+            stop();
+            delay(1000);
             //check if this is fire
             PhotoTransistor_Read();
             if((lr_right_avg > 4)||(lr_left_avg > 4))
@@ -58,13 +74,16 @@ bool MoveToFireUntil_WithAvoidence()
             }
             else 
             {
+                stop();
+                delay(500);
                 //start avoidence
-                bool startAvoidance = true; 
-                while(startAvoidence)
+                startAvoidance = true; 
+                while(startAvoidance)
                 {
+                    
                     //cw+
                     //ccw- 
-                    int speed_vel = Calculate_Turning_Potential();
+                    speed_vel = Calculate_Turning_Potential();
                     left_font_motor.writeMicroseconds(1500 + speed_vel);
                     left_rear_motor.writeMicroseconds(1500 + speed_vel);
                     right_rear_motor.writeMicroseconds(1500 +speed_vel);
@@ -72,23 +91,29 @@ bool MoveToFireUntil_WithAvoidence()
 
                     if(speed_vel < 100)
                     {
+                        
                         startAvoidance = false;
 
-                        int time_start = millis();
-                        int time_gap = millis() - time_start;
-                        while (time_gap < 500)
+                        time_count = 0;
+                        while (time_count <= 10)
                         {
                             left_font_motor.writeMicroseconds(1500 - 500);
                             left_rear_motor.writeMicroseconds(1500 - 500);
                             right_rear_motor.writeMicroseconds(1500 + 500);
                             right_font_motor.writeMicroseconds(1500 + 500);
 
+                            left_distance_IR = IR_sensorReadDistance("41_02");
+                            right_distance_IR = IR_sensorReadDistance("41_03");
                             if((left_distance_IR < 150)||(left_distance_IR < 150)||(HC_SR04_range() < 10))
                             {
                                 stop();
-                                time_gap += 500;
+                                time_count += 10;
                             }
+                            
+                            delay(50);
                         }
+                        stop();
+                        delay(2000);
                     }
                 }
             }
@@ -107,5 +132,7 @@ bool MoveToFireUntil_WithAvoidence()
         right_font_motor.writeMicroseconds(1500 + motor_speeds[3]);
         //Serial1.print(">Error: ");
         //Serial1.println(error_kp);
+
+        delay(100);
     }
 }

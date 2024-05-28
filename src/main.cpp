@@ -220,9 +220,7 @@ void loop()
   case RUNNING:
   {
     movement_phase = 1;
-    // MoveToFireUntil_WithAvoidence();
-    // while(true) {cw(); delay(10000);}
-    // Serial.print(movement_phase);
+    
     switch (movement_phase)
     {
     case 0:
