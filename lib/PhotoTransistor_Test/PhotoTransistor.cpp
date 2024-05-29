@@ -153,7 +153,7 @@ bool FireHoming_Avoidence()
   {
     PhotoTransistor_Read();
     //thresholds for transitioning
-    // if (lr_right_avg > threshold || lr_left_avg > threshold)
+    // if (lr_right_avg > threshold  || lr_left_avg > threshold)
     // {
     //   right - lr_right;
     //   left = lr_left;

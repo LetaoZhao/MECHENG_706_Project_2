@@ -48,6 +48,12 @@ void SimpleAvoidence()
     }
 }
 
+void Keep_Gyro_Zero()
+{
+    readGyro1();
+    while(currentAngle)
+}
+
 int Turn_Until_Free()
 {
     int time_start = millis();
@@ -92,86 +98,94 @@ int Turn_Until_Free()
 void ObjectAvoidence(){
     bool isReached = false;
     int avoidenceState = 0;
-    int turn90Mills = 600;
 
-    int goStraightTime = 600;
+    int pass_time_count_desirde = 12; //50*count = goStraightTime
+    int pass_time_count = 0;
 
-    int temp_time = 0;
+    bool passed = 1;
     int temp_turn_time = 0;
 
 
     while(!isReached){
         switch (avoidenceState){
             case 0:
-
+                //turn untill no object in front of robot
                 temp_turn_time = Turn_Until_Free();
                 avoidenceState = 1;
                 break;
 
-            case 1: //move pass object
-                while(pass_time_count <= )
+            case 1: 
+                //move pass object
+                pass_time_count = 0;
+                passed = 1;
+                while(pass_time_count < pass_time_count_desirde)
                 {
                     reverse();
-                    if((HC_SR04_range() <10)||(IR_sensorReadDistance("41_02") <200)||(IR_sensorReadDistance("41_03")<100))
+                    if((HC_SR04_range() < 10)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 100))
                     {
+                        //if another object, avoid it again
                         stop();
-                        temp_time = temp_time - goStraightTime*2;
+                        pass_time_count = 13;
+                        avoidenceState = 0;
+                        passed = 0;
                     }
-                    delay(50);                }
-                stop();
+                    delay(50);   
+                    pass_time_count++;             
+                }
 
-                avoidenceState = 2;
+                //if passed the object
+                if(passed)
+                {
+                    stop();
+                    avoidenceState = 2;
+                }       
                 break;
 
             case 2: //turn back to rough fire direction
                 if(temp_turn_time < 0) //if after turn left, ccw
                 {
-                    cw(); //turn right back
-                    delay(-1*temp_turn_time); 
+                    ccw_low(); //turn right back
+                    delay(-1*temp_turn_time + 200); 
                 }
                 else //if after turn right, ccw
                 {
-                    ccw(); //turn right back
-                    delay(temp_turn_time); 
+                    cw_low(); //turn right back
+                    delay(temp_turn_time + 200); 
                 }
-                
-                //if there is an object
-                if((HC_SR04_range() <10)||(IR_sensorReadDistance("41_02") <200)||(IR_sensorReadDistance("41_03")<100))
-                {
-                    //turn back and go around it again
-                    if(temp_turn_time < 0) 
-                    {
-                        ccw();
-                        delay(-1*temp_turn_time); 
-                    }
-                    else //if after turn right, ccw
-                    {
-                        cw(); 
-                        delay(temp_turn_time); 
-                    }
-                    avoidenceState = 1;
-                }
-                else
-                {
-                    avoidenceState = 3;//move a bit forward
-                }
-                break;
+                avoidenceState = 3;
 
-            case 3:
-                temp_time = millis(); //move pass the obstacle
-                while((millis() - temp_time) <= goStraightTime*2)
+            case 3: //move forward a bit
+                pass_time_count = 0;
+                passed = 1;
+                while(pass_time_count < pass_time_count_desirde)
                 {
                     reverse();
-                    if((HC_SR04_range() <10)||(IR_sensorReadDistance("41_02") <200)||(IR_sensorReadDistance("41_03")<100))
+                    if((HC_SR04_range() < 10)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 100))
                     {
+                        //if another object, avoid it again
                         stop();
-                        temp_time = temp_time - goStraightTime*2;
+                        pass_time_count = 13;
+                        avoidenceState = 0;
+                        passed = 0;
                     }
+                    delay(50);   
+                    pass_time_count++;             
                 }
-                delay(goStraightTime);
-                stop();
-                isReached = true;
+
+                //if passed the object
+                if(passed)
+                {
+                    stop();
+                    isReached = true; //can traking the fire again
+                }       
                 break;
+
+            default:
+                break;
+        }
+    }
+}
+
 
 
 
@@ -268,13 +282,3 @@ void ObjectAvoidence(){
 
                 
                 
-            default:
-                break;
-        }
-       
-
-    }
-    
-    
-
-}

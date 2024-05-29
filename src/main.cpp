@@ -220,39 +220,69 @@ void loop()
   case RUNNING:
   {
     movement_phase = 1;
+    int execute_time_count = 0;
+    int loop_number = 0;
     
     switch (movement_phase)
     {
-    case 0:
+    case 0: //find fire
       if(TurnToFire() == true){
         movement_phase ++;
       }
-      // movement_phase++;
-      
       break;
-    case 1:
+
+    case 1: //go to fire
       if(FireHoming_Avoidence() == true)
       {
         movement_phase++;
       }
       break;
-    case 2:
-      digitalWrite(45,HIGH);
-      break;
-    }
-    // machine_state = running();
-    // while(FireHoming() == false)
-    // {
 
-      Serial1.print(">Right Average: ");
-      Serial1.println(lr_right_avg);
-      Serial1.print(">Left Average: ");
-      Serial1.println(lr_left_avg);
-      Serial1.print(">R-L: " );
-      Serial1.println(lr_right_avg-lr_left_avg);
-      delay(10);
-    // }
+    case 2: //execute fire
+      start_fan();
+      execute_time_count = 0;
+      while((lr_right_avg > 4)||(lr_left_avg > 4)) 
+      {
+        //while not executed, keep doing that
+        delay(50);
+        PhotoTransistor_Read();
+
+        //if execute greater than 10 sec, break
+        if(execute_time_count > 19) 
+        {
+          lr_right_avg = 0;
+          lr_left_avg = 0;
+        }
+      } 
+      stop_fan();
+
+      loop_number++;
+      if(loop_number >= 2)
+      {
+        //if two fires are executed, stop
+        movement_phase++;
+      }
+      else
+      {
+        //if not, do total process again
+        movement_phase = 0;
+      }
+      break;
+
+    case 3:
+      while(true)
+      {
+        cw(); //celebrate
+      }
+      break;
+
+    default:
+      break;
+
+    }
+
     break;
+
   }
   case STOPPED: // Stop of Lipo Battery voltage is too low, to protect Battery
   {
