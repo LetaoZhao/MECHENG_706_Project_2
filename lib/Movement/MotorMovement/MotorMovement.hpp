@@ -19,3 +19,4 @@ void compute_speed(float (&motor_speeds) [4]);
 void enable_fan();
 void start_fan();
 void stop_fan();
+void reverse_low();

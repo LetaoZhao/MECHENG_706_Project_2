@@ -76,19 +76,7 @@ int Turn_Until_Free()
     float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
     float sonar_distance = HC_SR04_range();
 
-    if((left_distance_IR < 200)||(sonar_distance < 10))
-    {
-        while((left_distance_IR < 200)||(sonar_distance < 10))
-        {
-            cw_low();
-            left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-            right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
-            sonar_distance = HC_SR04_range();
-            delay(50);
-        }
-        turn_time_count--;
-    }
-    else
+    if ((right_distance_IR < 100)||(sonar_distance < 10))
     {
         while((right_distance_IR < 100)||(sonar_distance < 10))
         {
@@ -97,8 +85,20 @@ int Turn_Until_Free()
             right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
             sonar_distance = HC_SR04_range();
             delay(50);
+            turn_time_count++;
         }
-        turn_time_count++;
+    }
+    else
+    {
+        while((left_distance_IR < 200)||(sonar_distance < 10))
+        {
+            cw_low();
+            left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
+            right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+            sonar_distance = HC_SR04_range();
+            delay(50);
+            turn_time_count--;
+        }
     }
     stop();
 
@@ -121,7 +121,7 @@ void ObjectAvoidence(){
         switch (avoidenceState){
             case 0:
                 //turn untill no object in front of robot
-                temp_turn_time_count = Turn_Until_Free();
+                turn_time_count = Turn_Until_Free();
                 avoidenceState = 1;
                 break;
 
@@ -131,7 +131,7 @@ void ObjectAvoidence(){
                 passed = 1;
                 while(pass_time_count < pass_time_count_desirde)
                 {
-                    reverse();
+                    reverse_low();
                     if((HC_SR04_range() < 10)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 100))
                     {
                         //if another object, avoid it again
@@ -153,25 +153,26 @@ void ObjectAvoidence(){
                 break;
 
             case 2: //turn back to rough fire direction
-                turn_time_count= 0;
-                if(temp_turn_time_count < 0) //if after turn right, cw
+                temp_turn_time_count = 0;
+                if(turn_time_count < 0) //if after turn right, cw
                 {
-                    while(turn_time_count >= temp_turn_time_count)
+                    while(temp_turn_time_count >= (turn_time_count-5))
                     {
                         ccw_low(); //turn left back
                         delay(50);
-                        turn_time_count--;
+                        temp_turn_time_count--;
                     }
                 }
                 else //if after turn left, ccw
                 {
-                    while(turn_time_count <= temp_turn_time_count)
+                    while(temp_turn_time_count <= (turn_time_count+5))
                     {
                         cw_low(); //turn right back
                         delay(50);
-                        turn_time_count++;
+                        temp_turn_time_count++;
                     }
                 }
+                stop();
                 avoidenceState = 3;
 
             case 3: //move forward a bit
@@ -179,7 +180,7 @@ void ObjectAvoidence(){
                 passed = 1;
                 while(pass_time_count < pass_time_count_desirde)
                 {
-                    reverse();
+                    reverse_low();
                     if((HC_SR04_range() < 10)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 100))
                     {
                         //if another object, avoid it again

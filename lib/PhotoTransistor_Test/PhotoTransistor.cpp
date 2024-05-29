@@ -134,7 +134,7 @@ bool FireHoming_Avoidence()
   static float error_kp;
   static float kp = 1000;
   bool found_fire = false;
-  if((HC_SR04_range() < 10) || IR_sensorReadDistance("41_02") < 200 || IR_sensorReadDistance("41_03") < 100)
+  if((HC_SR04_range() < 15) || IR_sensorReadDistance("41_02") < 200 || IR_sensorReadDistance("41_03") < 100)
   {
     
     PhotoTransistor_Read();

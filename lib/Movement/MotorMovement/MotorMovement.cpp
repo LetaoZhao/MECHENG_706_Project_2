@@ -68,6 +68,14 @@ void reverse()
     right_font_motor.writeMicroseconds(1500 + speed_val);
 }
 
+void reverse_low()
+{
+    left_font_motor.writeMicroseconds(1500 - 300);
+    left_rear_motor.writeMicroseconds(1500 - 300);
+    right_rear_motor.writeMicroseconds(1500 + 300);
+    right_font_motor.writeMicroseconds(1500 + 300);
+}
+
 void ccw()
 {
     left_font_motor.writeMicroseconds(1500 - speed_val);
