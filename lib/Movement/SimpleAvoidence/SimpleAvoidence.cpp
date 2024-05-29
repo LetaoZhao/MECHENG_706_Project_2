@@ -5,6 +5,7 @@
 #include <PhotoTransistor.hpp>
 #include <IR_Read.hpp>
 #include <GlobalVariable.hpp>
+#include <Gyro.hpp>
 
 void SimpleAvoidence()
 {
@@ -51,7 +52,7 @@ void SimpleAvoidence()
 void Keep_Gyro_Zero()
 {
     readGyro1();
-    while(currentAngle)
+    while(currentAngle);
 }
 
 int Turn_Until_Free()

@@ -52,34 +52,69 @@ void PhotoTransistor_Read() {
   lr_right_avg = lr_right_avg/10;
   lr_left_avg = lr_left_avg/10;
   lr_mid_avg = lr_mid_avg/10;
+
+
+  Serial1.print(">Right LR: ");
+  Serial1.println(lr_voltage_right[0]);
+  Serial1.print(">Left LR: ");
+  Serial1.println(lr_voltage_left[0]);
+  Serial1.print(">Difference: "),
+  Serial1.println(lr_right_avg-lr_left_avg);
+  delay(10);
 }
 
 
 bool TurnToFire()
 {
   PhotoTransistor_Read();
+  static float error = 0;
+  static float error_kp;
+  static float kp = 250;
+  error_kp = error*kp;
+  if (error_kp < 0) {error_kp = error_kp * -1;} //make sure error is not negative
+  static float motor_speed = speed_val_low + error_kp; //add to a speed value to speed up when far away
+  if (motor_speed > 500) {motor_speed = 500;} //saturation
+
   if(lr_right_avg-lr_left_avg > 0.3)
   {
     // Serial.println("right bigger than left");
-    cw_low();
+    //go cw
+    left_font_motor.writeMicroseconds(1500 + motor_speed);
+    right_font_motor.writeMicroseconds(1500 + motor_speed);
+    left_rear_motor.writeMicroseconds(1500 + motor_speed);
+    right_rear_motor.writeMicroseconds(1500 + motor_speed);
+
   }
   else if (lr_left_avg-lr_right_avg > 0.3)
   {
     // Serial.println("left bigger than right");
-    ccw_low();
+    //go ccw
+    left_font_motor.writeMicroseconds(1500 - motor_speed);
+    right_font_motor.writeMicroseconds(1500 - motor_speed);
+    left_rear_motor.writeMicroseconds(1500 - motor_speed);
+    right_rear_motor.writeMicroseconds(1500 -  motor_speed);
   }
-  else if ((lr_left_avg < 0.1) & (lr_right_avg < 0.1))
+  else if ((lr_left_avg < 0.3) & (lr_right_avg < 0.3))
   {
     // Serial.println("zero");
-    cw_low();
+    cw();
+    // cw();
   }
-  else if (lr_right_avg - lr_left_avg < 0.1 && lr_right_avg > 0.5) //to stop erroneous stopping when looking at zeros
+  else if (lr_right_avg - lr_left_avg < 0.3 && (lr_right_avg > 0.3 || lr_left_avg > 0.3)) //to stop erroneous stopping when looking at zeros
   {
     stop();
     return true;
-    // Serial.println("found it");
+    Serial1.println("found it");
     // stop();
   }
+
+  Serial1.print(">Right LR: ");
+  Serial1.println(lr_right_avg);
+  Serial1.print(">Left LR: ");
+  Serial1.println(lr_left_avg);
+  Serial1.print(">Difference: "),
+  Serial1.println(lr_right_avg-lr_left_avg);
+  delay(10);
 
   return false;
 }
