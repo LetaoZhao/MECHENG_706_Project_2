@@ -88,6 +88,12 @@ int Turn_Until_Free()
             delay(50);
             manual_gyro_count++;
             turn_time_count++;
+            Serial1.print(">left_IR_distance: ");
+            Serial1.println(left_distance_IR);
+            Serial1.print(">right_IR_distance: ");
+            Serial1.println(right_distance_IR);
+            Serial1.print(">Sonar_distance: ");
+            Serial1.println(sonar_distance);
         }
     }
     else
@@ -101,6 +107,12 @@ int Turn_Until_Free()
             delay(50);
             manual_gyro_count--;
             turn_time_count--;
+            Serial1.print(">left_IR_distance: ");
+            Serial1.println(left_distance_IR);
+            Serial1.print(">right_IR_distance: ");
+            Serial1.println(right_distance_IR);
+            Serial1.print(">Sonar_distance: ");
+            Serial1.println(sonar_distance);
         }
     }
     stop();
@@ -130,6 +142,7 @@ void ObjectAvoidence(){
                 manual_gyro_count = 0;
                 turn_time_count = Turn_Until_Free();
                 avoidenceState = 1;
+                isReached = 1;
                 break;
 
             case 10:
