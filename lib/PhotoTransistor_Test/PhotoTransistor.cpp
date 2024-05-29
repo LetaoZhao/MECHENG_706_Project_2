@@ -177,7 +177,10 @@ bool FireHoming_Avoidence()
   static float error_kp;
   static float kp = 100;
   bool found_fire = false;
-  if((HC_SR04_range() < 15) || IR_sensorReadDistance("41_02") < 200 || IR_sensorReadDistance("41_03") < 100)
+  double left_IR_dis = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
+  double right_IR_dis = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+  double sonar_dis = (HC_SR04_range()+HC_SR04_range()+HC_SR04_range())/3;
+  if((sonar_dis < 15) || (left_IR_dis < 200) || (right_IR_dis < 130))
   {
     
     PhotoTransistor_Read();
@@ -188,7 +191,25 @@ bool FireHoming_Avoidence()
     }
     else
     {
+      // stop();
+      // delay(2000);
+      // if(left_IR_dis < 200)
+      // {
+      //   ccw();
+      //   delay(500);
+      // }
+      // else if(right_IR_dis < 130)
+      // {
+      //   cw();
+      //   delay(500);
+      // }
+      // else{}
+      // stop();
+      // delay(2000);
+      
       ObjectAvoidence();
+      // stop();
+      // delay(2000);
     }
         
   }

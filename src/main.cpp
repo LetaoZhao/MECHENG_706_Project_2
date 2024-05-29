@@ -219,7 +219,7 @@ void loop()
   }
   case RUNNING:
   {
-    movement_phase = 0;
+    movement_phase = 1;
     int execute_time_count = 0;
     int loop_number = 0;
     // Serial1.println("RUNNING");
