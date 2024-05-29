@@ -123,9 +123,10 @@ void ObjectAvoidence(){
 
 
     while(!isReached){
+        Serial1.println(avoidenceState);
         switch (avoidenceState){
             case 0:
-                //turn untill no object in front of robot
+                //turn until no object in front of robot
                 manual_gyro_count = 0;
                 turn_time_count = Turn_Until_Free();
                 avoidenceState = 1;
@@ -214,6 +215,7 @@ void ObjectAvoidence(){
             default:
                 break;
         }
+        
     }
 }
 
