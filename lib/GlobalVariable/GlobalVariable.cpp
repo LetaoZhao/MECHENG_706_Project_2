@@ -90,6 +90,13 @@ float VALUE_2Y02 = 0.0;
 float PREVIOUS_2Y04_VALUE = 0;
 float PREVIOUS_2Y02_VALUE = 0;
 
+float IR_values_right[30];
+float IR_right_avg = 0;
+float IR_values_left[30];
+float IR_left_avg = 0;
+float IR_sum_left;
+float IR_sum_right;
+
 // float Kp_IR_dif = 10;
 // float Kp_IR_abs = 15;
 float threathod_IR = 10000;

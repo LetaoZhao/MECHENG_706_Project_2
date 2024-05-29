@@ -73,6 +73,12 @@ extern float VALUE_2Y02;
 extern float PREVIOUS_2Y04_VALUE;
 extern float PREVIOUS_2Y02_VALUE;
 extern float threathod_IR;
+extern float IR_values_right[30];
+extern float IR_right_avg;
+extern float IR_values_left[30];
+extern float IR_left_avg;
+extern float IR_sum_right;
+extern float IR_sum_left;
 
 // Sonar readings and averages
 extern float sonar_reading;

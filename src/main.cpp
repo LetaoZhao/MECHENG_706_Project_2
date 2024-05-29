@@ -14,6 +14,7 @@
 #include <TurnTurretTo/TurnTurretTo.hpp>
 #include <PhotoTransistor.hpp>
 #include <MoveToFireUntil_WithAvoidence/MoveToFireUntil_WithAvoidence.hpp>
+#include <IR_Read.hpp>
 // import libraries====================================================================================================end
 
 // variables declearation============================================================================================start
@@ -91,6 +92,7 @@ STATE initialising()
   SerialCom->println("Test");
   PhotoTransistor_Initialize();
   SerialCom->println("Initialized the photo sensors");
+  IR_filter_initialize();
 
   return RUNNING;
 }
@@ -219,6 +221,26 @@ void loop()
   }
   case RUNNING:
   {
+    //test the forward sensors
+    while(1)
+    {
+    float left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
+    float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+    float sonar_distance = HC_SR04_range();
+
+      Serial1.print(">left ir: ");
+  Serial1.println(left_distance_IR);
+  delay(1);
+  Serial1.print(">right ir: ");
+  Serial1.println(right_distance_IR);
+  delay(1);
+  Serial1.print(">sonar: "),
+  Serial1.println(sonar_distance);
+  delay(1);
+    }
+    
+
+    
     movement_phase = 1;
     int execute_time_count = 0;
     int loop_number = 0;

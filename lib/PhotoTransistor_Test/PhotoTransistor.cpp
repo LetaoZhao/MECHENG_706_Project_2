@@ -60,7 +60,7 @@ void PhotoTransistor_Read() {
   // Serial1.print(">Left LR: ");
   // // Serial1.println(lr_voltage_left[0]);
   // Serial1.println(lr_right_avg);
-  // Serial1.print(">Difference: "),
+  // Serial1.print(">Difference: " ),
   // Serial1.println(lr_right_avg-lr_left_avg);
   // delay(10);
 }

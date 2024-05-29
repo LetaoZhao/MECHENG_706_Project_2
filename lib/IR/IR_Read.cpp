@@ -256,3 +256,47 @@ else
     //temp_reading = 0.0;
     return distance;
 }
+
+
+double IR_filter()
+{
+    IR_sum_left = IR_sum_left - IR_values_left[29]; //remove the last value of the array from the sum total
+    IR_sum_right = IR_sum_right - IR_values_right[29]; //remove the last value of the array from the sum total
+
+    //right shift the array
+    for (int i = 29; i >= 1; i--)
+    { 
+    IR_values_left[i] = IR_values_left[i-1];
+    IR_values_right[i] = IR_values_right[i-1];
+    }
+
+    //Get new values
+    IR_values_left[0] = IR_sensorReadDistance("41_02");
+    IR_values_right[0] = IR_sensorReadDistance("41_03");
+
+    //Add new value to the sum
+    IR_sum_left += IR_values_left[0];
+    IR_sum_right += IR_values_right[0];
+
+    //Calculate teh average
+    IR_left_avg = IR_sum_left/30;
+    IR_right_avg = IR_sum_right/30;
+
+}
+
+void IR_filter_initialize()
+{
+    float sum_right = 0;
+    float sum_left = 0;
+    // fills the filter array with values
+  for(int i = 0; i < 30; i++)
+  {
+    IR_values_left[i] = IR_sensorReadDistance("41_02"); 
+    sum_left += IR_values_left[i];
+    IR_values_right[i] = IR_sensorReadDistance("41_03");
+    sum_right += IR_values_right[i];
+  }
+
+  IR_left_avg =sum_left/30;
+  IR_right_avg = sum_right/30;
+}
