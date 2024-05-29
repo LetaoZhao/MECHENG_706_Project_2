@@ -133,7 +133,7 @@ void ObjectAvoidence(){
                 while(pass_time_count < pass_time_count_desirde)
                 {
                     reverse_low();
-                    if((HC_SR04_range() < 10)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 100))
+                    if((HC_SR04_range() < 15)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 130))
                     {
                         //if another object, avoid it again
                         stop();
@@ -182,7 +182,7 @@ void ObjectAvoidence(){
                 while(pass_time_count < pass_time_count_desirde)
                 {
                     reverse_low();
-                    if((HC_SR04_range() < 10)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 100))
+                    if((HC_SR04_range() < 15)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 130))
                     {
                         //if another object, avoid it again
                         stop();
