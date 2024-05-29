@@ -5,6 +5,7 @@
 #include <PhotoTransistor.hpp>
 #include <IR_Read.hpp>
 #include <GlobalVariable.hpp>
+#include <Gyro.hpp>
 
 void SimpleAvoidence()
 {
@@ -51,14 +52,25 @@ void SimpleAvoidence()
 void Keep_Gyro_Zero()
 {
     readGyro1();
-    while(currentAngle)
+    while(abs(currentAngle) >= 5)
+    {
+        if(currentAngle < 0)
+        {
+            ccw_low();
+        }
+        else
+        {
+            cw_low();
+        }
+        delay(50);
+        readGyro1();
+    }
+    stop();
 }
 
 int Turn_Until_Free()
 {
-    int time_start = millis();
-    int time_used = 0;
-    int direction = 0;
+    int turn_time_count = 0;
 
     float left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
     float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
@@ -72,9 +84,9 @@ int Turn_Until_Free()
             left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
             right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
             sonar_distance = HC_SR04_range();
-            delay(10);
+            delay(50);
         }
-        direction = -1;
+        turn_time_count--;
     }
     else
     {
@@ -84,15 +96,13 @@ int Turn_Until_Free()
             left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
             right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
             sonar_distance = HC_SR04_range();
-            delay(10);
+            delay(50);
         }
-        direction = 1;
+        turn_time_count++;
     }
-
     stop();
-    time_used = millis() - time_start;
 
-    return direction*time_used;
+    return turn_time_count;
 }
 
 void ObjectAvoidence(){
@@ -103,14 +113,15 @@ void ObjectAvoidence(){
     int pass_time_count = 0;
 
     bool passed = 1;
-    int temp_turn_time = 0;
+    int turn_time_count = 0;
+    int temp_turn_time_count = 0;
 
 
     while(!isReached){
         switch (avoidenceState){
             case 0:
                 //turn untill no object in front of robot
-                temp_turn_time = Turn_Until_Free();
+                temp_turn_time_count = Turn_Until_Free();
                 avoidenceState = 1;
                 break;
 
@@ -142,15 +153,24 @@ void ObjectAvoidence(){
                 break;
 
             case 2: //turn back to rough fire direction
-                if(temp_turn_time < 0) //if after turn left, ccw
+                turn_time_count= 0;
+                if(temp_turn_time_count < 0) //if after turn right, cw
                 {
-                    ccw_low(); //turn right back
-                    delay(-1*temp_turn_time + 200); 
+                    while(turn_time_count >= temp_turn_time_count)
+                    {
+                        ccw_low(); //turn left back
+                        delay(50);
+                        turn_time_count--;
+                    }
                 }
-                else //if after turn right, ccw
+                else //if after turn left, ccw
                 {
-                    cw_low(); //turn right back
-                    delay(temp_turn_time + 200); 
+                    while(turn_time_count <= temp_turn_time_count)
+                    {
+                        cw_low(); //turn right back
+                        delay(50);
+                        turn_time_count++;
+                    }
                 }
                 avoidenceState = 3;
 
