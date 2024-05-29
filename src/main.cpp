@@ -219,16 +219,19 @@ void loop()
   }
   case RUNNING:
   {
-    movement_phase = 1;
+    movement_phase = 0;
     int execute_time_count = 0;
     int loop_number = 0;
+    // Serial1.println("RUNNING");
     
     switch (movement_phase)
     {
     case 0: //find fire
-      if(TurnToFire() == true){
-        movement_phase ++;
-      }
+      // Serial1.println(movement_phase);
+      PhotoTransistor_Read();
+      // if(TurnToFire() == true){
+      //   movement_phase++;
+      // }
       break;
 
     case 1: //go to fire

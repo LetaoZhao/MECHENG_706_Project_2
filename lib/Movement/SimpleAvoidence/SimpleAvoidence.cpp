@@ -6,6 +6,7 @@
 #include <IR_Read.hpp>
 #include <GlobalVariable.hpp>
 #include <Gyro.hpp>
+#include <Gyro.hpp>
 
 void SimpleAvoidence()
 {
