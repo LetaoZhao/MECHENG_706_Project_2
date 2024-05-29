@@ -132,7 +132,7 @@ void driveStrightUntilDistance(int cm)
     readGyro1();
     currentAngle = 0;
 
-    float torlance = 0.5; // degree
+    //float torlance = 0.5; // degree
 
     while (HC_SR04_range() > cm)
     {
@@ -150,7 +150,7 @@ void driveStringhtForDistance(int cm)
 {
     readGyro1();
     currentAngle = 0;
-    float torlance = 3; // degree
+    //float torlance = 3; // degree
     float currentDistance = HC_SR04_range();
 
     while (HC_SR04_range() > (currentDistance - cm))

@@ -51,7 +51,7 @@ bool MoveToFireUntil_WithAvoidence()
     static float kp = 1000;
 
     int time_count = 0;
-    int turret_count = -1;
+    //int turret_count = -1;
 
     int speed_vel = 0;
 

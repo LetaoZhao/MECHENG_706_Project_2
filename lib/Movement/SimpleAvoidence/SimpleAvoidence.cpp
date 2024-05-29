@@ -109,15 +109,17 @@ int Turn_Until_Free()
 }
 
 void ObjectAvoidence(){
+    stop();
+    delay(5000);
     bool isReached = false;
     int avoidenceState = 0;
 
-    int pass_time_count_desirde = 12; //50*count = goStraightTime
+    int pass_time_count_desirde = 10; //50*count = goStraightTime
     int pass_time_count = 0;
 
     bool passed = 1;
     int turn_time_count = 0;
-    int temp_turn_time_count = 0;
+    //int temp_turn_time_count = 0;
 
 
     while(!isReached){
@@ -126,14 +128,6 @@ void ObjectAvoidence(){
                 //turn untill no object in front of robot
                 manual_gyro_count = 0;
                 turn_time_count = Turn_Until_Free();
-                if(manual_gyro_count < 0)
-                {
-                    manual_gyro_offset = -10;
-                }
-                else
-                {
-                    manual_gyro_offset = 10;
-                }
                 avoidenceState = 1;
                 break;
 
@@ -176,6 +170,7 @@ void ObjectAvoidence(){
                     {
                         ccw_low();
                         manual_gyro_count++;
+                        delay(50);
                     }
                 }
                 else
@@ -184,6 +179,7 @@ void ObjectAvoidence(){
                     {
                         cw_low();
                         manual_gyro_count--;
+                        delay(50);
                     }
                 }
                 stop();
@@ -211,29 +207,8 @@ void ObjectAvoidence(){
                 if(passed)
                 {
                     stop();
-                    avoidenceState = 4;
+                    isReached = true; //can traking the fire again   
                 }     
-                break;
-
-            case 4: //do more turn to facing the fire
-                if(manual_gyro_offset < 0)
-                {
-                    while(manual_gyro_offset <= 0)
-                    {
-                        ccw_low();
-                        manual_gyro_offset++;
-                    }
-                }
-                else
-                {
-                    while(manual_gyro_offset >= 0)
-                    {
-                        cw_low();
-                        manual_gyro_offset--;
-                    }
-                }
-
-                isReached = true; //can traking the fire again   
                 break;
 
             default:

@@ -100,5 +100,5 @@ extern double lr_left_avg;
 extern double lr_mid_avg;
 
 // manual gyro
-int manual_gyro_count;
-int manual_gyro_offset;
+extern int manual_gyro_count;
+extern int manual_gyro_offset;
