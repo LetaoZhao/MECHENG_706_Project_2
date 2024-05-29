@@ -28,13 +28,13 @@ void PhotoTransistor_Initialize() {
 void PhotoTransistor_Read() {
   //run repeatedly
   //voltage is 10 pt array
-  for (int i = 9; i >= 2; i--)
+  for (int i = 9; i >= 1; i--)
   {
     lr_voltage_left[i] = lr_voltage_left[i-1];
     lr_voltage_right[i] = lr_voltage_right[i-1];
     lr_voltage_mid[i] = lr_voltage_mid[i-1];
   }
-
+ 
   lr_voltage_right[0] = analogRead(A15) * 0.0049; //5V 10Bit ADC
   lr_voltage_left[0] = analogRead(A14) * 0.0049; //5V 10Bit ADC
   lr_voltage_mid[0] = analogRead(A12) * 0.0049;
@@ -54,13 +54,15 @@ void PhotoTransistor_Read() {
   lr_mid_avg = lr_mid_avg/10;
 
 
-  Serial1.print(">Right LR: ");
-  Serial1.println(lr_voltage_right[0]);
-  Serial1.print(">Left LR: ");
-  Serial1.println(lr_voltage_left[0]);
-  Serial1.print(">Difference: "),
-  Serial1.println(lr_right_avg-lr_left_avg);
-  delay(10);
+  // Serial1.print(">Right LR: ");
+  // // Serial1.println(lr_voltage_right[0]);
+  // Serial1.println(lr_left_avg);
+  // Serial1.print(">Left LR: ");
+  // // Serial1.println(lr_voltage_left[0]);
+  // Serial1.println(lr_right_avg);
+  // Serial1.print(">Difference: "),
+  // Serial1.println(lr_right_avg-lr_left_avg);
+  // delay(10);
 }
 
 
@@ -69,13 +71,21 @@ bool TurnToFire()
   PhotoTransistor_Read();
   static float error = 0;
   static float error_kp;
-  static float kp = 250;
+  static float kp = 1;
   error_kp = error*kp;
   if (error_kp < 0) {error_kp = error_kp * -1;} //make sure error is not negative
   static float motor_speed = speed_val_low + error_kp; //add to a speed value to speed up when far away
   if (motor_speed > 500) {motor_speed = 500;} //saturation
 
-  if(lr_right_avg-lr_left_avg > 0.3)
+
+  if (lr_right_avg - lr_left_avg < 0.8 && (lr_right_avg > 1 || lr_left_avg > 1)) //to stop erroneous stopping when looking at zeros
+  {
+    stop();
+    return true;
+    Serial1.println("found it");
+    // stop();
+  }
+  else if (lr_right_avg-lr_left_avg > 0.3)
   {
     // Serial.println("right bigger than left");
     //go cw
@@ -94,27 +104,25 @@ bool TurnToFire()
     left_rear_motor.writeMicroseconds(1500 - motor_speed);
     right_rear_motor.writeMicroseconds(1500 -  motor_speed);
   }
-  else if ((lr_left_avg < 0.3) & (lr_right_avg < 0.3))
+  else if ((lr_left_avg < 0.6) & (lr_right_avg < 0.6))
   {
     // Serial.println("zero");
     cw();
     // cw();
   }
-  else if (lr_right_avg - lr_left_avg < 0.3 && (lr_right_avg > 0.3 || lr_left_avg > 0.3)) //to stop erroneous stopping when looking at zeros
-  {
-    stop();
-    return true;
-    Serial1.println("found it");
-    // stop();
-  }
 
   Serial1.print(">Right LR: ");
   Serial1.println(lr_right_avg);
+  delay(1);
   Serial1.print(">Left LR: ");
   Serial1.println(lr_left_avg);
+  delay(1);
   Serial1.print(">Difference: "),
   Serial1.println(lr_right_avg-lr_left_avg);
-  delay(10);
+  delay(1);
+  Serial1.print(">Error: ");
+  Serial1.println(error_kp);
+  delay(1);
 
   return false;
 }
