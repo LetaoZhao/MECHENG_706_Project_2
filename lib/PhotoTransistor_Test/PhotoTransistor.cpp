@@ -131,7 +131,7 @@ bool FireHoming()
 {
   static float error = 0;
   static float error_kp;
-  static float kp = 1000;
+  static float kp = 100;
   bool found_fire = false;
   if(HC_SR04_range() < 10)
   {
@@ -175,7 +175,7 @@ bool FireHoming_Avoidence()
 {
   static float error = 0;
   static float error_kp;
-  static float kp = 1000;
+  static float kp = 100;
   bool found_fire = false;
   if((HC_SR04_range() < 15) || IR_sensorReadDistance("41_02") < 200 || IR_sensorReadDistance("41_03") < 100)
   {

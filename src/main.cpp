@@ -228,10 +228,10 @@ void loop()
     {
     case 0: //find fire
       // Serial1.println(movement_phase);
-      // PhotoTransistor_Read();
-      if(TurnToFire() == true){
-        movement_phase++;
-      }
+      FireHoming();
+      // if(TurnToFire() == true){
+      //   movement_phase++;
+      // }
       break;
 
     case 1: //go to fire
