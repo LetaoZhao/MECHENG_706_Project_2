@@ -86,6 +86,7 @@ int Turn_Until_Free()
             right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
             sonar_distance = HC_SR04_range();
             delay(50);
+            manual_gyro_count++;
             turn_time_count++;
         }
     }
@@ -98,6 +99,7 @@ int Turn_Until_Free()
             right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
             sonar_distance = HC_SR04_range();
             delay(50);
+            manual_gyro_count--;
             turn_time_count--;
         }
     }
@@ -122,6 +124,20 @@ void ObjectAvoidence(){
         switch (avoidenceState){
             case 0:
                 //turn untill no object in front of robot
+                manual_gyro_count = 0;
+                turn_time_count = Turn_Until_Free();
+                if(manual_gyro_count < 0)
+                {
+                    manual_gyro_offset = -10;
+                }
+                else
+                {
+                    manual_gyro_offset = 10;
+                }
+                avoidenceState = 1;
+                break;
+
+            case 10:
                 turn_time_count = Turn_Until_Free();
                 avoidenceState = 1;
                 break;
@@ -133,12 +149,12 @@ void ObjectAvoidence(){
                 while(pass_time_count < pass_time_count_desirde)
                 {
                     reverse_low();
-                    if((HC_SR04_range() < 15)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 130))
+                    if((HC_SR04_range() < 17)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 130))
                     {
                         //if another object, avoid it again
                         stop();
                         pass_time_count = 13;
-                        avoidenceState = 0;
+                        avoidenceState = 10;
                         passed = 0;
                     }
                     delay(50);   
@@ -154,23 +170,20 @@ void ObjectAvoidence(){
                 break;
 
             case 2: //turn back to rough fire direction
-                temp_turn_time_count = 0;
-                if(turn_time_count < 0) //if after turn right, cw
+                if(manual_gyro_count < 0)
                 {
-                    while(temp_turn_time_count >= (turn_time_count-5))
+                    while(manual_gyro_count <= 0)
                     {
-                        ccw_low(); //turn left back
-                        delay(50);
-                        temp_turn_time_count--;
+                        ccw_low();
+                        manual_gyro_count++;
                     }
                 }
-                else //if after turn left, ccw
+                else
                 {
-                    while(temp_turn_time_count <= (turn_time_count+5))
+                    while(manual_gyro_count >= 0)
                     {
-                        cw_low(); //turn right back
-                        delay(50);
-                        temp_turn_time_count++;
+                        cw_low();
+                        manual_gyro_count--;
                     }
                 }
                 stop();
@@ -182,12 +195,12 @@ void ObjectAvoidence(){
                 while(pass_time_count < pass_time_count_desirde)
                 {
                     reverse_low();
-                    if((HC_SR04_range() < 15)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 130))
+                    if((HC_SR04_range() < 17)||(IR_sensorReadDistance("41_02") < 200)||(IR_sensorReadDistance("41_03") < 130))
                     {
                         //if another object, avoid it again
                         stop();
                         pass_time_count = 13;
-                        avoidenceState = 0;
+                        avoidenceState = 10;
                         passed = 0;
                     }
                     delay(50);   
@@ -198,8 +211,29 @@ void ObjectAvoidence(){
                 if(passed)
                 {
                     stop();
-                    isReached = true; //can traking the fire again
-                }       
+                    avoidenceState = 4;
+                }     
+                break;
+
+            case 4: //do more turn to facing the fire
+                if(manual_gyro_offset < 0)
+                {
+                    while(manual_gyro_offset <= 0)
+                    {
+                        ccw_low();
+                        manual_gyro_offset++;
+                    }
+                }
+                else
+                {
+                    while(manual_gyro_offset >= 0)
+                    {
+                        cw_low();
+                        manual_gyro_offset--;
+                    }
+                }
+
+                isReached = true; //can traking the fire again   
                 break;
 
             default:

@@ -120,3 +120,7 @@ double lr_voltage_mid[10];
 double lr_right_avg;
 double lr_left_avg;
 double lr_mid_avg;
+
+// manual gyro
+int manual_gyro_count = 0;
+int manual_gyro_offset = 0;

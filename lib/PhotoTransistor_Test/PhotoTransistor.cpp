@@ -180,7 +180,7 @@ bool FireHoming_Avoidence()
   double left_IR_dis = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
   double right_IR_dis = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
   double sonar_dis = (HC_SR04_range()+HC_SR04_range()+HC_SR04_range())/3;
-  if((sonar_dis < 15) || (left_IR_dis < 200) || (right_IR_dis < 130))
+  if((sonar_dis < 17) || (left_IR_dis < 200) || (right_IR_dis < 130))
   {
     
     PhotoTransistor_Read();
