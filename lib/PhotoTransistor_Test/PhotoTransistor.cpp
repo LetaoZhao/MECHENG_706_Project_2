@@ -78,14 +78,14 @@ bool TurnToFire()
   if (motor_speed > 500) {motor_speed = 500;} //saturation
 
 
-  if (lr_right_avg - lr_left_avg < 0.8 && (lr_right_avg > 1 || lr_left_avg > 1)) //to stop erroneous stopping when looking at zeros
+  if (lr_right_avg - lr_left_avg < 0.65 && (lr_right_avg > 1 || lr_left_avg > 1)) //to stop erroneous stopping when looking at zeros
   {
     stop();
     return true;
     Serial1.println("found it");
     // stop();
   }
-  else if (lr_right_avg-lr_left_avg > 0.3)
+  else if (lr_right_avg-lr_left_avg > 0.6)
   {
     // Serial.println("right bigger than left");
     //go cw
@@ -95,7 +95,7 @@ bool TurnToFire()
     right_rear_motor.writeMicroseconds(1500 + motor_speed);
 
   }
-  else if (lr_left_avg-lr_right_avg > 0.3)
+  else if (lr_left_avg-lr_right_avg > 0.6)
   {
     // Serial.println("left bigger than right");
     //go ccw
