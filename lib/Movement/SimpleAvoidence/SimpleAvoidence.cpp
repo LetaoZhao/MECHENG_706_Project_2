@@ -73,46 +73,48 @@ int Turn_Until_Free()
 {
     int turn_time_count = 0;
 
-    float left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-    float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
     float sonar_distance = HC_SR04_range();
-
-    if ((right_distance_IR < 100)||(sonar_distance < 10))
+    if (sonar_distance < 10)
     {
-        while((right_distance_IR < 100)||(sonar_distance < 10))
+        while(sonar_distance < 10)
         {
             ccw_low();
-            left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-            right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
             sonar_distance = HC_SR04_range();
             delay(50);
             manual_gyro_count++;
+            turn_time_count++; 
+        }   
+        stop();
+
+        ccw_low();
+        delay(300);
+        stop();
+        manual_gyro_count = manual_gyro_count + 6;
+    }
+
+    float left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
+    float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+
+    if (right_distance_IR < 100)
+    {
+        while(right_distance_IR < 100)
+        {
+            ccw_low();
+            right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+            manual_gyro_count++;
             turn_time_count++;
-            Serial1.print(">left_IR_distance: ");
-            Serial1.println(left_distance_IR);
-            Serial1.print(">right_IR_distance: ");
-            Serial1.println(right_distance_IR);
-            Serial1.print(">Sonar_distance: ");
-            Serial1.println(sonar_distance);
+            delay(50);
         }
     }
     else
     {
-        while((left_distance_IR < 200)||(sonar_distance < 10))
+        while(left_distance_IR < 200)
         {
             cw_low();
             left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-            right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
-            sonar_distance = HC_SR04_range();
-            delay(50);
             manual_gyro_count--;
             turn_time_count--;
-            Serial1.print(">left_IR_distance: ");
-            Serial1.println(left_distance_IR);
-            Serial1.print(">right_IR_distance: ");
-            Serial1.println(right_distance_IR);
-            Serial1.print(">Sonar_distance: ");
-            Serial1.println(sonar_distance);
+            delay(50);
         }
     }
     stop();
@@ -122,7 +124,6 @@ int Turn_Until_Free()
 
 void ObjectAvoidence(){
     stop();
-    delay(5000);
     bool isReached = false;
     int avoidenceState = 0;
 
@@ -142,7 +143,6 @@ void ObjectAvoidence(){
                 manual_gyro_count = 0;
                 turn_time_count = Turn_Until_Free();
                 avoidenceState = 1;
-                isReached = 1;
                 break;
 
             case 10:
