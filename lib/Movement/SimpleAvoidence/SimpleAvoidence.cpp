@@ -166,7 +166,7 @@ bool Drive_Until_Free()
 
 
     // check for objects
-    if((sonar_reading < 15) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_left_45_avg < 200) || (IR_right_45_avg < 200))
+    if((sonar_reading < 15) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_left_45_avg < 300) || (IR_right_45_avg < 300))
     {
 
         stop();

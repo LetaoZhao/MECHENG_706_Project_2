@@ -406,6 +406,7 @@ void loop()
       break;
     }
     Serial1.println(phase);
+    print_sensors();
 
     break;
 
