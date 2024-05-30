@@ -59,4 +59,11 @@ void print_sensors()
     Serial1.println(IR_left_avg);
     Serial1.print(">Sonar: "),
     Serial1.println(sonar_reading);
+    Serial1.print(">Right LR: ");
+    Serial1.println(lr_left_avg); 
+    Serial1.print(">Left LR: ");
+    Serial1.println(lr_right_avg);
+    Serial1.print(">GyroAngle: ");
+    Serial1.println(currentAngle);
+
 }

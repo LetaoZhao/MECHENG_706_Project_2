@@ -64,7 +64,7 @@ enum MOVEMENT_PHASE
   EXTUINGUISH = 7
 };
 
-MOVEMENT_PHASE phase = HOMING;
+MOVEMENT_PHASE phase = SEARCHING;
 
 
 
@@ -243,10 +243,7 @@ void loop()
     static unsigned long drive_free_start_time = millis();
     // Serial1.println("RUNNING");
 
-    while(1)
-    {
-      
-    }
+
 
     
     switch (phase)
@@ -255,6 +252,16 @@ void loop()
       // Serial1.println(movement_phase);
       // PhotoTransistor_Read();
       if(TurnToFire() == true){
+
+        // delay(300);
+        currentAngle = 0;
+        while(1)
+        {
+          PhotoTransistor_Read();
+          readGyro1();
+          print_sensors();
+        
+        }
         phase = HOMING;
       }
       break;
