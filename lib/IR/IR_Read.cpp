@@ -263,8 +263,8 @@ double IR_read_filter()
     float ir_left_reading_temp = IR_sensorReadDistance("41_02");
     float ir_right_reading_temp = IR_sensorReadDistance("41_03");
 
-    if (ir_left_reading_temp > 400) { ir_left_reading_temp = 400;}
-    if (ir_right_reading_temp > 400) {ir_right_reading_temp = 400;}
+    if (ir_left_reading_temp > 450) { ir_left_reading_temp = 450;}
+    if (ir_right_reading_temp > 450) {ir_right_reading_temp = 450;}
 
     // //ignore value if difference from last reading is extreme
     // if (ir_left_reading_temp - IR_values_left[0] > 100 || IR_values_left[0] - ir_left_reading_temp > 100) {ir_left_reading_temp = IR_values_left[0];}
@@ -309,8 +309,8 @@ void IR_filter_initialize()
     ir_left_reading_temp = IR_sensorReadDistance("41_02");
     ir_right_reading_temp = IR_sensorReadDistance("41_03");
     //ceiling the reading
-    if (ir_left_reading_temp > 400) { ir_left_reading_temp = 400;}
-    if (ir_right_reading_temp > 400) {ir_right_reading_temp = 400;}
+    if (ir_left_reading_temp > 450) { ir_left_reading_temp = 450;}
+    if (ir_right_reading_temp > 450) {ir_right_reading_temp = 450;}
     
     IR_values_left[i] = ir_left_reading_temp;
     IR_sum_left += IR_values_left[i];

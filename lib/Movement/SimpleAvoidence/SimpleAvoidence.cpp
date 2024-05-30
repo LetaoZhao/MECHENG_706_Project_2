@@ -72,59 +72,89 @@ void Keep_Gyro_Zero()
 
 int Turn_Until_Free()
 {
-    int turn_time_count = 0;
-    Serial1.println("Avoiding!");
-
-    sonar_reading = HC_SR04_range();
-    if (sonar_reading < 10)
-    {
-        while(sonar_reading < 10)
-        {
-            Serial1.println("Sonar Turn");
-            ccw_low();
-            sonar_reading = HC_SR04_range();
-            turn_time_count++;
-            IR_read_filter();
-            print_sensors();
-            delay(50);
-
-         }
-    stop();
-    }   
-    
+    // Serial1.println("Avoiding!");
     IR_read_filter();
-
-    if (IR_right_avg < 100)
+    sonar_reading = HC_SR04_range();
+    //check if the object is on the right
+    if (IR_left_avg > IR_right_avg)
     {
-        while(IR_right_avg < 100)
-        {   
-            ccw_low();
+        //object is on the right
+        ccw_low(); //not sure if right direction
 
-            //get reasings
-            sonar_reading = HC_SR04_range();
-            IR_read_filter();
-            turn_time_count++;
-            //print
-            print_sensors();
-            delay(50);
-        }
+        //set a variable here to indicate the avoidance direciton
     }
+    //check if the object is on the left
+    else if (IR_right_avg > IR_left_avg)
+    {
+        cw_low();
+
+        //set a variable here to indicate the aviodance direciton
+    }
+    //in case neither sensor has a reading
     else
     {
-        while(IR_left_avg < 200)
-        {   
-            cw_low();
-            IR_read_filter();
-            sonar_reading = HC_SR04_range();
-            turn_time_count--;
-            print_sensors();
-            delay(50);
-        }
+        cw_low();
     }
-    stop();
 
-    return turn_time_count;
+    //check if clear of object
+    if((IR_left_avg > 300) && (IR_right_avg > 300) && (sonar_reading > 25))
+    {
+        stop();
+        //update the state
+    }
+
+    print_sensors();
+
 }
+    
+    // IR_read_filter();
+
+    // if (IR_right_avg < 100)
+    // {
+    //     while(IR_right_avg < 100)
+    //     {   
+    //         ccw_low();
+
+    //         //get reasings
+    //         sonar_reading = HC_SR04_range();
+    //         IR_read_filter();
+    //         turn_time_count++;
+    //         //print
+    //         // print_sensors();
+    //         delay(50);
+    //     }
+    // }
+    // else if (IR_left_avg < 200)
+    // {
+    //     while(IR_left_avg < 200)
+    //     {   
+    //         cw_low();
+    //         IR_read_filter();
+    //         sonar_reading = HC_SR04_range();
+    //         turn_time_count--;
+    //         // print_sensors();
+    //         delay(50);
+            
+    //     }
+    // }
+    // else
+    // {
+    //     while(sonar_reading < 10)
+    //     {
+    //         Serial1.println("Sonar Turn");
+    //         ccw_low();
+    //         sonar_reading = HC_SR04_range();
+    //         turn_time_count++;
+    //         IR_read_filter();
+    //         // print_sensors();
+    //         delay(50);
+
+    //      }
+    // stop();
+    // }   
+
+    // return turn_time_count;
+// }
 
 void ObjectAvoidence(){
     stop();

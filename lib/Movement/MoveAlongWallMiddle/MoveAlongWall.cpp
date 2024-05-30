@@ -225,7 +225,7 @@ void moving_alone_wall_middle(float target_distance_Sonar, float target_distance
         left_rear_motor.writeMicroseconds(1500 + SVLR);
         right_rear_motor.writeMicroseconds(1500 + SVRR);
         right_font_motor.writeMicroseconds(1500 + SVRF);
-        ReadAllSensor();
+        // ReadAllSensor();
 
         // ccw == all (-)
         // cw === all (+)

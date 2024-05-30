@@ -5,6 +5,7 @@
 #include <Sonar.hpp>
 #include <SimpleAvoidence/SimpleAvoidence.hpp>
 #include <IR_Read.hpp>
+#include <SerialComs.hpp>
 
 void PhotoTransistor_Initialize() {
   // put your setup code here, to run once:
@@ -177,20 +178,16 @@ bool FireHoming_Avoidence()
   static float error_kp;
   static float kp = 100;
   bool found_fire = false;
-  double left_IR_dis = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-  double right_IR_dis = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
-  double sonar_dis = (HC_SR04_range()+HC_SR04_range()+HC_SR04_range())/3;
-  if((sonar_dis < 20) || (left_IR_dis < 200) || (right_IR_dis < 130))
+  IR_read_filter();
+  sonar_reading = HC_SR04_range();
+  if((sonar_reading < 18) || (IR_left_avg < 250) || (IR_right_avg < 250))
   {
+    //STOP IMMEDIATELY
+    stop();
     
-    PhotoTransistor_Read();
-    if(lr_mid_avg > 3.8)
-    {
-      stop();
-      found_fire = true;
-    }
-    else
-    {
+    //check if the fire is found later
+
+    
       // stop();
       // delay(2000);
       // if(left_IR_dis < 200)
@@ -210,14 +207,18 @@ bool FireHoming_Avoidence()
       // ObjectAvoidence();
       // stop();
       // delay(2000);
-
-      Turn_Until_Free();
-
       while(1)
       {
+      Turn_Until_Free();
+      }
+      while(1)
+      {
+        sonar_reading = HC_SR04_range();
+        IR_read_filter();
+        print_sensors();
         delay(1);
       }
-    }
+    
         
   }
   else

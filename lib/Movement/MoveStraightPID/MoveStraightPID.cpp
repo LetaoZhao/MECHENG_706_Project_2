@@ -104,7 +104,7 @@ void MoveStraightAlongAngle(float TargetAngle_Degree, float Power, int hold)
         // Serial.print(SVLF);
         // Serial.print(" ");
         // Serial.println(SVLR);
-        ReadAllSensor();
+        // //ReadAllSensor();
 
         delay(hold);
     }
@@ -141,7 +141,7 @@ void driveStrightUntilDistance(int cm)
         //  forward();
         MoveStraightPID(100);
         delay(20);
-        ReadAllSensor();
+        // ReadAllSensor();
     }
     stop();
 }
