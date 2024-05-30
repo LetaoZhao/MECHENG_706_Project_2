@@ -2,6 +2,7 @@
 #include <Servo.h> //Need for Servo pulse output
 #include <GlobalVariable.hpp>
 #include <PhotoTransistor.hpp>
+#include <MotorMovement/MotorMovement.hpp>
 
 void TurnTurretTo(double angle)
 {
@@ -50,4 +51,30 @@ void TurretToFire()
         TurnTurretTo(angle);
         delay(50);
     }
+}
+
+void Execute_Fire()
+{
+    // while(TurnToFire() == 0)
+    // {
+    //     delay(50);
+    // }
+    
+    start_fan();
+    PhotoTransistor_Read();
+    int execute_time_count = 0;
+    while(lr_mid_avg > 0.3) 
+    {
+      //while not executed, keep doing that
+      execute_time_count++;
+      delay(50);
+      PhotoTransistor_Read();
+
+      //if execute greater than 10 sec, break
+      if(execute_time_count > 200) 
+      {
+        lr_mid_avg = 0;
+      }
+    } 
+    stop_fan();
 }
