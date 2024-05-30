@@ -1,14 +1,15 @@
 #include <Arduino.h>
 #include <Servo.h> //Need for Servo pulse output
 #include <GlobalVariable.hpp>
+#include <PhotoTransistor.hpp>
 
 void TurnTurretTo(double angle)
 {
     //ccw as positive degrees
 
     //saturation
-    if (angle >= 60) {angle = 60;}
-    else if (angle <= -60) {angle = -60;}
+    if (angle >= 55) {angle = 55;}
+    else if (angle <= -55) {angle = -55;}
     else {}
 
     //find position value
@@ -17,4 +18,36 @@ void TurnTurretTo(double angle)
     //action
     turret_motor.writeMicroseconds(value);
     delay(500);
+}
+
+void TurretToFire()
+{
+    bool isFind = false;
+    double angle = 0;
+    TurnTurretTo(angle);
+
+    while(isFind == 0)
+    {
+        PhotoTransistor_Read();
+        if(lr_right_avg - lr_left_avg > 0.1)
+        {
+            angle = angle - 1;
+        }
+        else if(lr_left_avg - lr_right_avg > 0.1)
+        {
+            angle = angle + 1;
+        }
+        else
+        {
+            isFind = 1;
+        }
+
+        if((angle > 55)||(angle < -55))
+        {
+            isFind = 1;
+        }
+
+        TurnTurretTo(angle);
+        delay(50);
+    }
 }

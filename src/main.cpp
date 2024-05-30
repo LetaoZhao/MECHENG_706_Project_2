@@ -242,9 +242,6 @@ void loop()
     static bool NoObject = 0;
     static unsigned long drive_free_start_time = millis();
     // Serial1.println("RUNNING");
-
-
-
     
     switch (phase)
     {
