@@ -71,7 +71,7 @@ void PhotoTransistor_Read() {
 bool TurnToFire()
 {
   PhotoTransistor_Read();
-  readGyro1();
+  // readGyro1();
   static float error = 0;
   static float error_kp;
   static float kp = 1;
@@ -112,18 +112,16 @@ bool TurnToFire()
   //cant see a signal
   else if ((lr_left_avg < 0.6) & (lr_right_avg < 0.6))
   {
+    if (currentAngle > 0)
+    {
       cw();
+    }
+    else
+    {
+      ccw();
+    } 
     // Serial.println("zero");
   }
-  else if ()
-  {
-
-  }
-  else if ()
-  {
-    
-  }
-
   print_sensors();
   // Serial1.print(">Right LR: ");
   // Serial1.println(lr_right_avg);

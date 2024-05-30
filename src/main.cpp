@@ -244,12 +244,6 @@ void loop()
     // Serial1.println("RUNNING");
 
 
-    Execute_Fire();
-    while(true) {delay(1000);}
-
-
-
-
     switch (phase)
     {
     case SEARCHING: //find fire
@@ -276,7 +270,7 @@ void loop()
       {
         //check fire
         //current just avoids
-        phase = AVOID;
+        phase = CHECKFIRE;
       }
       break;
     case AVOID:
@@ -310,6 +304,25 @@ void loop()
         } 
       }
 
+      break;
+      case CHECKFIRE:
+        PhotoTransistor_Read();
+        if (lr_mid_avg > 0.3)
+        {
+          phase = EXTUINGUISH;
+        }
+        else 
+        {
+          phase = AVOID;
+        }
+      break;
+
+      case EXTUINGUISH:
+        while(1)
+        {
+          Execute_Fire();
+          Serial1.println("EXTUINGUISH!!!!");
+        }
       break;
     // case 2: //execute fire
     //   start_fan();
