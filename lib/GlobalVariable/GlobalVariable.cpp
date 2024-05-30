@@ -100,6 +100,13 @@ float IR_left_avg = 0;
 float IR_sum_left;
 float IR_sum_right;
 
+float IR_values_right_45[30];
+float IR_right_45_avg;
+float IR_values_left_45[30];
+float IR_left_45_avg;
+float IR_sum_right_45;
+float IR_sum_left_45;
+
 // float Kp_IR_dif = 10;
 // float Kp_IR_abs = 15;
 float threathod_IR = 10000;
@@ -134,3 +141,6 @@ double lr_mid_avg;
 // manual gyro
 int manual_gyro_count = 0;
 int manual_gyro_offset = 0;
+
+//fires
+int fires_extuiguished = 0;

@@ -98,7 +98,7 @@ bool Turn_Until_Free()
     }
 
     //check if clear of object
-    if((IR_left_avg > 300) && (IR_right_avg > 300) && (sonar_reading > 15))
+    if((IR_left_avg > 200) && (IR_right_avg > 200) && (sonar_reading > 15))
     {
         stop();
         return true;

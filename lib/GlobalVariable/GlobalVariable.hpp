@@ -82,6 +82,13 @@ extern float IR_left_avg;
 extern float IR_sum_right;
 extern float IR_sum_left;
 
+extern float IR_values_right_45[30];
+extern float IR_right_45_avg;
+extern float IR_values_left_45[30];
+extern float IR_left_45_avg;
+extern float IR_sum_right_45;
+extern float IR_sum_left_45;
+
 // Sonar readings and averages
 extern float sonar_reading;
 extern float sonar_reading_prev1;
@@ -110,3 +117,5 @@ extern double lr_mid_avg;
 // manual gyro
 extern int manual_gyro_count;
 extern int manual_gyro_offset;
+
+extern int fires_extuiguished;

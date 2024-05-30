@@ -329,7 +329,7 @@ void loop()
       break;
       case CHECKFIRE:
         PhotoTransistor_Read();
-        if (lr_mid_avg > 0.4 && lr_right_avg > 3 && lr_left_avg > 3)
+        if ((lr_mid_avg > 0.6) && (lr_right_avg > 3) && (lr_left_avg > 3))
         {
           phase = EXTUINGUISH;
         }
@@ -343,7 +343,18 @@ void loop()
       case EXTUINGUISH:
         if (Execute_Fire() == true)
         {
-          phase = DONOTHING;
+          //reverse away from fire
+          forward();
+          delay(200);
+          stop();
+
+          //update number of fires
+          fires_extuiguished++;
+          phase = SEARCHING;
+          if (fires_extuiguished == 2)
+          {
+            phase = DONOTHING;
+          }
         }
       break;
 
