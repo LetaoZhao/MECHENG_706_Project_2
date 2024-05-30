@@ -73,11 +73,12 @@ bool TurnToFire()
   PhotoTransistor_Read();
   // readGyro1();
   static float error = 0;
+  error = lr_left_avg - lr_right_avg;
   static float error_kp;
-  static float kp = 1;
+  static float kp = 0.1;
   error_kp = error*kp;
   if (error_kp < 0) {error_kp = error_kp * -1;} //make sure error is not negative
-  static float motor_speed = speed_val_low + error_kp; //add to a speed value to speed up when far away
+  static float motor_speed = 100 + error_kp; //add to a speed value to speed up when far away
   if (motor_speed > 500) {motor_speed = 500;} //saturation
 
 
@@ -122,7 +123,7 @@ bool TurnToFire()
     } 
     // Serial.println("zero");
   }
-  print_sensors();
+  // print_sensors();
   // Serial1.print(">Right LR: ");
   // Serial1.println(lr_right_avg);
   // delay(1);

@@ -61,7 +61,8 @@ enum MOVEMENT_PHASE
   DRIVEFREE = 4,
   DONOTHING = 5,
   CHECKFIRE = 6,
-  EXTUINGUISH = 7
+  EXTUINGUISH = 7,
+  REFINESEARCH = 8
 };
 
 MOVEMENT_PHASE phase = SEARCHING;
@@ -261,9 +262,8 @@ void loop()
       // Serial1.println(movement_phase);
       // PhotoTransistor_Read();
       if(TurnToFire() == true){
+        phase = HOMING;
 
-        delay(300);
-        currentAngle = 0;
         // while(1)
         // {
         //   PhotoTransistor_Read();
@@ -271,11 +271,19 @@ void loop()
         //   print_sensors();
         
         // }
-        phase = HOMING;
+
       }
       break;
 
     case HOMING: //go to fire
+    if((sonar_reading < 20) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_right_45_avg < 300) || (IR_left_45_avg < 300))
+    {
+          stop();
+          avoidance_start_time = millis();
+          phase = AVOID;   
+    }
+    else
+    {
       FireHomingObject = FireHoming_Avoidence();
       if (FireHomingObject == true)
       {
@@ -283,6 +291,7 @@ void loop()
         //current just avoids
         phase = CHECKFIRE;
       }
+    }
       break;
     case AVOID:
     //time out the avoidance after 5 seconds
@@ -290,6 +299,7 @@ void loop()
     {
       //we have gotten stuck potentially in a corner
       stop();
+      cw();
       phase = SEARCHING;
     }
     else
@@ -329,7 +339,8 @@ void loop()
       break;
       case CHECKFIRE:
         PhotoTransistor_Read();
-        if ((lr_mid_avg > 0.6) && (lr_right_avg > 3) && (lr_left_avg > 3))
+        sonar_reading = HC_SR04_range();
+        if ((lr_mid_avg > 0.6) && (sonar_reading < 20))
         {
           phase = EXTUINGUISH;
         }
@@ -350,17 +361,31 @@ void loop()
 
           //update number of fires
           fires_extuiguished++;
+          cw();
           phase = SEARCHING;
           if (fires_extuiguished == 2)
           {
-            phase = DONOTHING;
-          }
+          phase = DONOTHING;
+        }
         }
       break;
 
       case DONOTHING:
         delay(10);
       break;
+
+      case REFINESEARCH:
+      if(TurnToFire() == true)
+      {
+
+        delay(300);
+
+        phase = HOMING;
+      }
+      break;
+
+
+        
     // case 2: //execute fire
     //   start_fan();
     //   execute_time_count = 0;
