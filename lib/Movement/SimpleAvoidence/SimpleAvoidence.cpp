@@ -74,6 +74,7 @@ bool Turn_Until_Free()
 {
     // Serial1.println("Avoiding!");
     IR_read_filter();
+    readGyro1();
     sonar_reading = HC_SR04_range();
     //check if the object is on the right
     if (IR_left_avg > IR_right_avg)

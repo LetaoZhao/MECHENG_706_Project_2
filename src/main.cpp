@@ -244,7 +244,6 @@ void loop()
     // Serial1.println("RUNNING");
 
 
-
     
     switch (phase)
     {
@@ -253,15 +252,15 @@ void loop()
       // PhotoTransistor_Read();
       if(TurnToFire() == true){
 
-        // delay(300);
+        delay(300);
         currentAngle = 0;
-        while(1)
-        {
-          PhotoTransistor_Read();
-          readGyro1();
-          print_sensors();
+        // while(1)
+        // {
+        //   PhotoTransistor_Read();
+        //   readGyro1();
+        //   print_sensors();
         
-        }
+        // }
         phase = HOMING;
       }
       break;
@@ -288,9 +287,11 @@ void loop()
     case DRIVEFREE:
 
       Serial1.println(millis() - drive_free_start_time);
-      if (millis() - drive_free_start_time > 500)
+      if (millis() - drive_free_start_time > 800)
       {
-        // phase = SEARCHING;
+
+        phase = SEARCHING;
+        // print_sensors();
         stop();
       }
       else 
@@ -322,6 +323,9 @@ void loop()
     //     }
     //   } 
     //   stop_fan();
+
+
+
 
     //   loop_number++;
     //   if(loop_number >= 2)

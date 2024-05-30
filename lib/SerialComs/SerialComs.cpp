@@ -65,5 +65,7 @@ void print_sensors()
     Serial1.println(lr_right_avg);
     Serial1.print(">GyroAngle: ");
     Serial1.println(currentAngle);
+    Serial1.print(">Mid IR: ");
+    Serial1.println(lr_mid_avg);
 
 }

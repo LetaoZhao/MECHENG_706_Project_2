@@ -109,25 +109,34 @@ bool TurnToFire()
     left_rear_motor.writeMicroseconds(1500 - motor_speed);
     right_rear_motor.writeMicroseconds(1500 -  motor_speed);
   }
+  //cant see a signal
   else if ((lr_left_avg < 0.6) & (lr_right_avg < 0.6))
   {
+      cw();
     // Serial.println("zero");
-    cw();
-    // cw();
+  }
+  else if ()
+  {
+
+  }
+  else if ()
+  {
+    
   }
 
-  Serial1.print(">Right LR: ");
-  Serial1.println(lr_right_avg);
-  delay(1);
-  Serial1.print(">Left LR: ");
-  Serial1.println(lr_left_avg);
-  delay(1);
-  Serial1.print(">Difference: "),
-  Serial1.println(lr_right_avg-lr_left_avg);
-  delay(1);
-  Serial1.print(">Error: ");
-  Serial1.println(error_kp);
-  delay(1);
+  print_sensors();
+  // Serial1.print(">Right LR: ");
+  // Serial1.println(lr_right_avg);
+  // delay(1);
+  // Serial1.print(">Left LR: ");
+  // Serial1.println(lr_left_avg);
+  // delay(1);
+  // Serial1.print(">Difference: "),
+  // Serial1.println(lr_right_avg-lr_left_avg);
+  // delay(1);
+  // Serial1.print(">Error: ");
+  // Serial1.println(error_kp);
+  // delay(1);
 
   return false;
 }
