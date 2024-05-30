@@ -222,23 +222,6 @@ void loop()
   case RUNNING:
   {
     //test the forward sensors
-    while(1)
-    {
-      IR_read_filter();
-      sonar_reading = HC_SR04_range();
-
-      Serial1.print(">left ir: ");
-      Serial1.println(IR_left_avg);
-      delay(1);
-      Serial1.print(">right ir: ");
-      Serial1.println(IR_right_avg);
-      delay(1);
-      Serial1.print(">sonar: "),
-      Serial1.println(sonar_reading);
-      delay(1);
-    }
-    
-
     
     movement_phase = 1;
     int execute_time_count = 0;

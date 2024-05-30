@@ -92,15 +92,14 @@ int Turn_Until_Free()
         manual_gyro_count = manual_gyro_count + 6;
     }
 
-    float left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-    float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+    IR_read_filter();
 
-    if (right_distance_IR < 100)
+    if (IR_right_avg < 100)
     {
-        while(right_distance_IR < 100)
+        while(IR_right_avg < 100)
         {
             ccw_low();
-            right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
+            IR_read_filter();
             manual_gyro_count++;
             turn_time_count++;
             delay(50);
@@ -108,10 +107,10 @@ int Turn_Until_Free()
     }
     else
     {
-        while(left_distance_IR < 200)
+        while(IR_left_avg < 200)
         {
             cw_low();
-            left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
+            IR_read_filter();
             manual_gyro_count--;
             turn_time_count--;
             delay(50);
