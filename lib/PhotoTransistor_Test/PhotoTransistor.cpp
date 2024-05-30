@@ -177,14 +177,14 @@ bool FireHoming_Avoidence()
   static float error = 0;
   static float error_kp;
   static float kp = 100;
-  bool found_fire = false;
   IR_read_filter();
   sonar_reading = HC_SR04_range();
   if((sonar_reading < 18) || (IR_left_avg < 250) || (IR_right_avg < 250))
   {
     //STOP IMMEDIATELY
+    //should checkfire
     stop();
-    
+    return true;    
     //check if the fire is found later
 
     
@@ -206,19 +206,7 @@ bool FireHoming_Avoidence()
       
       // ObjectAvoidence();
       // stop();
-      // delay(2000);
-      while(1)
-      {
-      Turn_Until_Free();
-      }
-      while(1)
-      {
-        sonar_reading = HC_SR04_range();
-        IR_read_filter();
-        print_sensors();
-        delay(1);
-      }
-    
+      // delay(2000)
         
   }
   else
@@ -252,10 +240,9 @@ bool FireHoming_Avoidence()
 
   }
 
-  Serial.println(lr_mid_avg);
+  // Serial.println(lr_mid_avg);
   // Serial.println(lr_left_avg);
   // Serial.println(lr_right_avg);
-
-  return found_fire;
+  return false;
 }
 

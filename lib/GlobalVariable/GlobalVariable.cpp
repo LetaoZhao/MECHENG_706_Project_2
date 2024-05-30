@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <Servo.h>
 #include <Arduino.h>
+#include <GlobalVariable.hpp>
 
 
 // Refer to Shield Pinouts.jpg for pin locations
@@ -74,6 +75,7 @@ float GyroTimePrevious = 0;
 
 int movement_phase = 0; // use for flow control of the robots programmed movement
 int currentState = 0;
+
 
 // IR Readings
 float temp_4102 = 0.0;

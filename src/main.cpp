@@ -54,6 +54,10 @@ enum STATE
   STOPPED
 };
 
+MOVEMENT_PHASE phase = HOMING;
+
+
+
 int pos = 0;
 int i;
 float sum = 0;
@@ -226,67 +230,99 @@ void loop()
     movement_phase = 1;
     int execute_time_count = 0;
     int loop_number = 0;
+    static bool FireHomingObject= 0;
+    static bool NoObject = 0;
+    static int IsFree = 0;
     // Serial1.println("RUNNING");
 
     
-    switch (movement_phase)
+    switch (phase)
     {
-    case 0: //find fire
+    case SEARCHING: //find fire
       // Serial1.println(movement_phase);
       // PhotoTransistor_Read();
       if(TurnToFire() == true){
-        movement_phase++;
+        phase = HOMING;
       }
       break;
 
-    case 1: //go to fire
-      if(FireHoming_Avoidence() == true)
+    case HOMING: //go to fire
+      FireHomingObject = FireHoming_Avoidence();
+      if (FireHomingObject == true)
       {
-        movement_phase++;
+        //check fire
+        //current just avoids
+        phase = AVOID;
       }
       break;
-
-    case 2: //execute fire
-      start_fan();
-      execute_time_count = 0;
-      while((lr_right_avg > 4)||(lr_left_avg > 4)) 
+    case AVOID:
+      NoObject = Turn_Until_Free();
+      if (NoObject == true)
       {
-        //while not executed, keep doing that
-        delay(50);
-        PhotoTransistor_Read();
-
-        //if execute greater than 10 sec, break
-        if(execute_time_count > 19) 
+        phase = DRIVEFREE;
+        //go into the drive until free case
+      }
+      break;
+    case DRIVEFREE:
+      IsFree = Drive_Until_Free();
+      //if it finishes driving free
+      if(IsFree == 1)
+      {
+        stop();
+        // phase = SEARCHING;
+        while(1)
         {
-          lr_right_avg = 0;
-          lr_left_avg = 0;
+
         }
       } 
-      stop_fan();
-
-      loop_number++;
-      if(loop_number >= 2)
+      //if it encounters another obstacle
+      else if (IsFree == 2)
       {
-        //if two fires are executed, stop
-        movement_phase++;
-      }
-      else
-      {
-        //if not, do total process again
-        movement_phase = 0;
+        stop();
+        phase = AVOID;
       }
       break;
+    // case 2: //execute fire
+    //   start_fan();
+    //   execute_time_count = 0;
+    //   while((lr_right_avg > 4)||(lr_left_avg > 4)) 
+    //   {
+    //     //while not executed, keep doing that
+    //     delay(50);
+    //     PhotoTransistor_Read();
 
-    case 3:
-      while(true)
-      {
-        cw(); //celebrate
-      }
-      break;
+    //     //if execute greater than 10 sec, break
+    //     if(execute_time_count > 19) 
+    //     {
+    //       lr_right_avg = 0;
+    //       lr_left_avg = 0;
+    //     }
+    //   } 
+    //   stop_fan();
+
+    //   loop_number++;
+    //   if(loop_number >= 2)
+    //   {
+    //     //if two fires are executed, stop
+    //     movement_phase++;
+    //   }
+    //   else
+    //   {
+    //     //if not, do total process again
+    //     movement_phase = 0;
+    //   }
+    //   break;
+
+    // case 3:
+    //   while(true)
+    //   {
+    //     cw(); //celebrate
+    //   }
+    //   break;
 
     default:
       break;
-
+    Serial1.println(phase);
     }
 
     break;

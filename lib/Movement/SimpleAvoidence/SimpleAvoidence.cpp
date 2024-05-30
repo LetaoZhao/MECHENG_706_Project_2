@@ -70,7 +70,7 @@ void Keep_Gyro_Zero()
     stop();
 }
 
-int Turn_Until_Free()
+bool Turn_Until_Free()
 {
     // Serial1.println("Avoiding!");
     IR_read_filter();
@@ -100,11 +100,11 @@ int Turn_Until_Free()
     if((IR_left_avg > 300) && (IR_right_avg > 300) && (sonar_reading > 25))
     {
         stop();
+        return true;
         //update the state
     }
-
     print_sensors();
-
+    return false;
 }
     
     // IR_read_filter();
@@ -155,6 +155,31 @@ int Turn_Until_Free()
 
     // return turn_time_count;
 // }
+
+int Drive_Until_Free()
+{
+    //simple drive forward function
+    static unsigned long start_time = millis();
+    sonar_reading = HC_SR04_range();
+    IR_read_filter();
+
+    //drive forward for 1 second
+    if (millis()-start_time > 1000){
+        stop();
+        return 1;
+    } 
+    //check for objects
+    else if((sonar_reading < 18) || (IR_left_avg < 250) || (IR_right_avg < 250))
+    {
+        stop();
+        return 2;
+    }
+    else
+    {
+        reverse();
+    }
+}
+
 
 void ObjectAvoidence(){
     stop();

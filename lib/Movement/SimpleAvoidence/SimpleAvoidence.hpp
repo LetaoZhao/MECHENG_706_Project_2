@@ -1,3 +1,4 @@
 void SimpleAvoidence();
 void ObjectAvoidence();
-int Turn_Until_Free();
+bool Turn_Until_Free();
+int Drive_Until_Free();
