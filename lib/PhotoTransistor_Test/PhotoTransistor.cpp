@@ -80,10 +80,10 @@ bool TurnToFire()
   static float error = 0;
   error = lr_left_avg - lr_right_avg;
   static float error_kp;
-  static float kp = 0.1;
+  static float kp = 100;
   error_kp = error*kp;
   if (error_kp < 0) {error_kp = error_kp * -1;} //make sure error is not negative
-  static float motor_speed = 100 + error_kp; //add to a speed value to speed up when far away
+  static float motor_speed = error_kp; //add to a speed value to speed up when far away
   if (motor_speed > 500) {motor_speed = 500;} //saturation
 
 
@@ -193,10 +193,10 @@ bool FireHoming_Avoidence()
 {
   static float error = 0;
   static float error_kp;
-  static float kp = 150;
+  static float kp = 400;
   IR_read_filter();
   sonar_reading = HC_SR04_range();
-  if((sonar_reading < 20) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_right_45_avg < 300) || (IR_left_45_avg < 300))
+  if((sonar_reading < 20) || (IR_left_avg < 300) || (IR_right_avg < 300))
   {
     //STOP IMMEDIATELY
     //should checkfire

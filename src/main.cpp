@@ -299,7 +299,6 @@ void loop()
     {
       //we have gotten stuck potentially in a corner
       stop();
-      cw();
       phase = SEARCHING;
     }
     else
@@ -319,10 +318,9 @@ void loop()
       Serial1.println(millis() - drive_free_start_time);
       if (millis() - drive_free_start_time > 800)
       {
-
+        stop();
         phase = SEARCHING;
         // print_sensors();
-        stop();
       }
       else 
       {
@@ -340,7 +338,7 @@ void loop()
       case CHECKFIRE:
         PhotoTransistor_Read();
         sonar_reading = HC_SR04_range();
-        if ((lr_mid_avg > 0.6) && (sonar_reading < 20))
+        if ((lr_top_avg > 2))
         {
           phase = EXTUINGUISH;
         }
