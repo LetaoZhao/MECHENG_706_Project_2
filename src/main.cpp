@@ -224,19 +224,18 @@ void loop()
     //test the forward sensors
     while(1)
     {
-    float left_distance_IR = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
-    float right_distance_IR = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
-    float sonar_distance = HC_SR04_range();
+      IR_read_filter();
+      sonar_reading = HC_SR04_range();
 
       Serial1.print(">left ir: ");
-  Serial1.println(left_distance_IR);
-  delay(1);
-  Serial1.print(">right ir: ");
-  Serial1.println(right_distance_IR);
-  delay(1);
-  Serial1.print(">sonar: "),
-  Serial1.println(sonar_distance);
-  delay(1);
+      Serial1.println(IR_left_avg);
+      delay(1);
+      Serial1.print(">right ir: ");
+      Serial1.println(IR_right_avg);
+      delay(1);
+      Serial1.print(">sonar: "),
+      Serial1.println(sonar_reading);
+      delay(1);
     }
     
 

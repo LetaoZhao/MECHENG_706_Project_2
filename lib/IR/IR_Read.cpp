@@ -258,8 +258,14 @@ else
 }
 
 
-double IR_filter()
+double IR_read_filter()
 {
+    float ir_left_reading_temp = IR_sensorReadDistance("41_02");
+    float ir_right_reading_temp = IR_sensorReadDistance("41_03");
+
+    if (ir_left_reading_temp > 400) { ir_left_reading_temp = 400;}
+    if (ir_right_reading_temp > 400) {ir_right_reading_temp = 400;}
+
     IR_sum_left = IR_sum_left - IR_values_left[29]; //remove the last value of the array from the sum total
     IR_sum_right = IR_sum_right - IR_values_right[29]; //remove the last value of the array from the sum total
 
@@ -271,8 +277,8 @@ double IR_filter()
     }
 
     //Get new values
-    IR_values_left[0] = IR_sensorReadDistance("41_02");
-    IR_values_right[0] = IR_sensorReadDistance("41_03");
+    IR_values_left[0] = ir_left_reading_temp;
+    IR_values_right[0] = ir_right_reading_temp;
 
     //Add new value to the sum
     IR_sum_left += IR_values_left[0];
@@ -286,17 +292,21 @@ double IR_filter()
 
 void IR_filter_initialize()
 {
-    float sum_right = 0;
-    float sum_left = 0;
+    //makes sure that the array isn't filled up with crazy large values due to out of range event
+    float ir_left_reading_temp = IR_sensorReadDistance("41_02");
+    float ir_right_reading_temp = IR_sensorReadDistance("41_03");
+
+    if (ir_left_reading_temp > 400) { ir_left_reading_temp = 400;}
+    if (ir_right_reading_temp > 400) {ir_right_reading_temp = 400;}
     // fills the filter array with values
   for(int i = 0; i < 30; i++)
   {
     IR_values_left[i] = IR_sensorReadDistance("41_02"); 
-    sum_left += IR_values_left[i];
+    IR_sum_left += IR_values_left[i];
     IR_values_right[i] = IR_sensorReadDistance("41_03");
-    sum_right += IR_values_right[i];
+    IR_sum_right += IR_values_right[i];
   }
 
-  IR_left_avg =sum_left/30;
-  IR_right_avg = sum_right/30;
+  IR_left_avg =IR_sum_left/30;
+  IR_right_avg = IR_sum_right/30;
 }

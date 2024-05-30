@@ -1,3 +1,3 @@
 double IR_sensorReadDistance(const char *sensor);
-double IR_filter();
+double IR_read_filter();
 void IR_filter_initialize();
