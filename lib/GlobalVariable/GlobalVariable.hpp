@@ -110,9 +110,11 @@ extern float Ki_GV_dif;
 extern double lr_voltage_right[10];
 extern double lr_voltage_left[10];
 extern double lr_voltage_mid[10];
+extern double lr_voltage_top[10];
 extern double lr_right_avg;
 extern double lr_left_avg;
 extern double lr_mid_avg;
+extern double lr_top_avg;
 
 // manual gyro
 extern int manual_gyro_count;
