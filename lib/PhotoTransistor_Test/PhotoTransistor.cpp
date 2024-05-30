@@ -81,7 +81,7 @@ bool TurnToFire()
   if (motor_speed > 500) {motor_speed = 500;} //saturation
 
 
-  if ((lr_right_avg - lr_left_avg < 0.4) && (lr_left_avg - lr_right_avg < 0.4) && (lr_right_avg > 1 || lr_left_avg > 1))
+  if ((lr_right_avg - lr_left_avg < 0.6) && (lr_left_avg - lr_right_avg < 0.4) && (lr_right_avg > 1 || lr_left_avg > 1))
   {
     stop();
     //zero the gyro on the fire agnle so 0degrees is always towards the fire.

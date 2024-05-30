@@ -244,9 +244,19 @@ void loop()
     static unsigned long avoidance_start_time = millis();
     // Serial1.println("RUNNING");
 
+    //     while(1)
+    // {
+    //   PhotoTransistor_Read();
+    //   IR_read_filter();
+    //   sonar_reading = HC_SR04_range();
+    //   print_sensors();
+    //   delay(10);
+    // }
+
 
     switch (phase)
     {
+
     case SEARCHING: //find fire
       // Serial1.println(movement_phase);
       // PhotoTransistor_Read();
@@ -319,7 +329,7 @@ void loop()
       break;
       case CHECKFIRE:
         PhotoTransistor_Read();
-        if (lr_mid_avg > 0.3)
+        if (lr_mid_avg > 0.4 && lr_right_avg > 3 && lr_left_avg > 3)
         {
           phase = EXTUINGUISH;
         }
