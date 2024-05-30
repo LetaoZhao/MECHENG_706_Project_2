@@ -1,3 +1,3 @@
 void TurnTurretTo(double angle);
 void TurretToFire();
-void Execute_Fire();
+bool Execute_Fire();

@@ -241,6 +241,7 @@ void loop()
     static bool FireHomingObject= 0;
     static bool NoObject = 0;
     static unsigned long drive_free_start_time = millis();
+    static unsigned long avoidance_start_time = millis();
     // Serial1.println("RUNNING");
 
 
@@ -274,6 +275,15 @@ void loop()
       }
       break;
     case AVOID:
+    //time out the avoidance after 5 seconds
+    if(millis() - avoidance_start_time > 5000)
+    {
+      //we have gotten stuck potentially in a corner
+      stop();
+      phase = SEARCHING;
+    }
+    else
+    {
       NoObject = Turn_Until_Free();
       if (NoObject == true)
       {
@@ -282,6 +292,7 @@ void loop()
         
         //go into the drive until free case
       }
+    }
       break;
     case DRIVEFREE:
 
@@ -300,6 +311,7 @@ void loop()
         if(NoObject == false)
         {
           stop();
+          avoidance_start_time = millis();
           phase = AVOID;
         } 
       }
@@ -313,16 +325,20 @@ void loop()
         }
         else 
         {
+          avoidance_start_time = millis();
           phase = AVOID;
         }
       break;
 
       case EXTUINGUISH:
-        while(1)
+        if (Execute_Fire() == true)
         {
-          Execute_Fire();
-          Serial1.println("EXTUINGUISH!!!!");
+          phase = DONOTHING;
         }
+      break;
+
+      case DONOTHING:
+        delay(10);
       break;
     // case 2: //execute fire
     //   start_fan();

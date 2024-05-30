@@ -53,12 +53,13 @@ void TurretToFire()
     }
 }
 
-void Execute_Fire()
+bool Execute_Fire()
 {
     start_fan();
     PhotoTransistor_Read();
     int execute_time_count = 0;
-    while(lr_mid_avg > 0.3) 
+    static bool extuinguish_timeout = false;
+    while(lr_mid_avg > 0.3 && extuinguish_timeout == false) 
     {
       //while not executed, keep doing that
       execute_time_count++;
@@ -68,8 +69,9 @@ void Execute_Fire()
       //if execute greater than 10 sec, break
       if(execute_time_count > 200) 
       {
-        lr_mid_avg = 0;
+        extuinguish_timeout = true;
       }
     } 
     stop_fan();
+    return true;
 }

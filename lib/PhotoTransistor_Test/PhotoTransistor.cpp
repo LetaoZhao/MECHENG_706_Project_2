@@ -187,10 +187,10 @@ bool FireHoming_Avoidence()
 {
   static float error = 0;
   static float error_kp;
-  static float kp = 100;
+  static float kp = 150;
   IR_read_filter();
   sonar_reading = HC_SR04_range();
-  if((sonar_reading < 18) || (IR_left_avg < 250) || (IR_right_avg < 250))
+  if((sonar_reading < 20) || (IR_left_avg < 300) || (IR_right_avg < 300))
   {
     //STOP IMMEDIATELY
     //should checkfire
