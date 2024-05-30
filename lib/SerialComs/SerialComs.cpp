@@ -67,6 +67,8 @@ void print_sensors()
     Serial1.println(currentAngle);
     Serial1.print(">Mid IR: ");
     Serial1.println(lr_mid_avg);
+    Serial1.print(">Top IR: ");
+    Serial1.println(lr_top_avg);
     Serial1.print(">Right Angle IR: ");
     Serial1.println(IR_right_45_avg);
     Serial1.print(">Left Angle IR: ");
