@@ -55,11 +55,6 @@ void TurretToFire()
 
 void Execute_Fire()
 {
-    // while(TurnToFire() == 0)
-    // {
-    //     delay(50);
-    // }
-    
     start_fan();
     PhotoTransistor_Read();
     int execute_time_count = 0;
