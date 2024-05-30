@@ -7,6 +7,7 @@
 #include <GlobalVariable.hpp>
 #include <Gyro.hpp>
 #include <Gyro.hpp>
+#include <SerialComs.hpp>
 
 void SimpleAvoidence()
 {
@@ -82,25 +83,29 @@ int Turn_Until_Free()
             Serial1.println("Sonar Turn");
             ccw_low();
             sonar_reading = HC_SR04_range();
+            turn_time_count++;
+            IR_read_filter();
+            print_sensors();
             delay(50);
-            manual_gyro_count++;
-            turn_time_count++; 
-        }   
-        stop();
-        manual_gyro_count = manual_gyro_count + 6;
-    }
 
+         }
+    stop();
+    }   
+    
     IR_read_filter();
 
     if (IR_right_avg < 100)
     {
         while(IR_right_avg < 100)
         {   
-            Serial1.println("IR_right_Turn");
             ccw_low();
+
+            //get reasings
+            sonar_reading = HC_SR04_range();
             IR_read_filter();
-            manual_gyro_count++;
             turn_time_count++;
+            //print
+            print_sensors();
             delay(50);
         }
     }
@@ -108,11 +113,11 @@ int Turn_Until_Free()
     {
         while(IR_left_avg < 200)
         {   
-            Serial1.println("Ir_left_turn");
             cw_low();
             IR_read_filter();
-            manual_gyro_count--;
+            sonar_reading = HC_SR04_range();
             turn_time_count--;
+            print_sensors();
             delay(50);
         }
     }

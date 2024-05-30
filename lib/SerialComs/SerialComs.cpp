@@ -51,28 +51,12 @@ void interpret_command(char command)
     }
 }
 
-void ReadAllSensor()
+void print_sensors()
 {
-    Serial1.print(movement_phase);
-    Serial1.print(" ");
-
-    Serial1.print(VALUE_2Y04);
-    Serial1.print(" ");
-
-    Serial1.print(VALUE_4102);
-    Serial1.print(" ");
-
-    Serial1.print(VALUE_2Y02);
-    Serial1.print(" ");
-
-    Serial1.print(VALUE_4103);
-    Serial1.print(" ");
-
-    Serial1.print(sonar_reading);
-    Serial1.print(" ");
-
-    Serial1.print(currentAngle);
-    Serial1.print(" ");
-
-    Serial1.println(" ");
+    Serial1.print(">Right IR: ");
+    Serial1.println(IR_right_avg);
+    Serial1.print(">Left IR: ");
+    Serial1.println(IR_left_avg);
+    Serial1.print(">Sonar: "),
+    Serial1.println(sonar_reading);
 }

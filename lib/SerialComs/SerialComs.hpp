@@ -1,2 +1,2 @@
 void interpret_command(char command);
-void ReadAllSensor();
+void print_sensors();
