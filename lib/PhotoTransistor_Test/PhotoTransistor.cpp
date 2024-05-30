@@ -6,6 +6,7 @@
 #include <SimpleAvoidence/SimpleAvoidence.hpp>
 #include <IR_Read.hpp>
 #include <SerialComs.hpp>
+#include <Gyro.hpp>
 
 void PhotoTransistor_Initialize() {
   // put your setup code here, to run once:
@@ -70,6 +71,7 @@ void PhotoTransistor_Read() {
 bool TurnToFire()
 {
   PhotoTransistor_Read();
+  readGyro1();
   static float error = 0;
   static float error_kp;
   static float kp = 1;
@@ -82,8 +84,10 @@ bool TurnToFire()
   if (lr_right_avg - lr_left_avg < 0.65 && (lr_right_avg > 1 || lr_left_avg > 1)) //to stop erroneous stopping when looking at zeros
   {
     stop();
+    //save the angle the fire is at
+    fire_heading = currentAngle;
     return true;
-    Serial1.println("found it");
+    // Serial1.println("found it");
     // stop();
   }
   else if (lr_right_avg-lr_left_avg > 0.6)

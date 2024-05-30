@@ -56,6 +56,7 @@ extern float gyroRate;
 extern double currentAngle;
 extern float GyroTimeNow;
 extern float GyroTimePrevious;
+extern double fire_heading;
 
 // Movement phases and states
 extern int movement_phase;

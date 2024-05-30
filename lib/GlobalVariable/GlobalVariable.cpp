@@ -72,6 +72,7 @@ float gyroRate = 0;      // read out value of sensor in voltage
 double currentAngle = 0; // current angle calculated by angular velocity integral on
 float GyroTimeNow = 0;
 float GyroTimePrevious = 0;
+double fire_heading = 0;
 
 int movement_phase = 0; // use for flow control of the robots programmed movement
 int currentState = 0;
