@@ -244,7 +244,12 @@ void loop()
     // Serial1.println("RUNNING");
 
 
-    
+    Execute_Fire();
+    while(true) {delay(1000);}
+
+
+
+
     switch (phase)
     {
     case SEARCHING: //find fire

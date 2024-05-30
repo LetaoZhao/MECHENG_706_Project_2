@@ -11,7 +11,7 @@
 #define left_rear  47
 #define right_rear  50
 #define right_front  51
-#define turret 22
+#define turret 14
 
 // Default ultrasonic ranging sensor pins, these pins are defined my the Shield
 #define TRIG_PIN  48
