@@ -61,17 +61,6 @@ extern float GyroTimePrevious;
 extern int movement_phase;
 // enum movement_phase {TurnToFire, FireHoming, TurnAwayFromObject, DriveFree, TurnBack, CheckFire,Extinguish};
 extern int currentState;
-enum MOVEMENT_PHASE
-{
-  SEARCHING,
-  HOMING,
-  AVOID,
-  DRIVEFREE,
-  DONOTHING,
-  CHECKFIRE,
-  EXTUINGUISH
-};
-
 
 // IR sensor readings
 extern float temp_4102;

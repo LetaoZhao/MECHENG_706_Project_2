@@ -53,6 +53,16 @@ enum STATE
   RUNNING,
   STOPPED
 };
+enum MOVEMENT_PHASE
+{
+  SEARCHING = 1,
+  HOMING = 2,
+  AVOID = 3,
+  DRIVEFREE = 4,
+  DONOTHING = 5,
+  CHECKFIRE = 6,
+  EXTUINGUISH = 7
+};
 
 MOVEMENT_PHASE phase = HOMING;
 
@@ -228,11 +238,9 @@ void loop()
     //test the forward sensors
     
     movement_phase = 1;
-    int execute_time_count = 0;
-    int loop_number = 0;
     static bool FireHomingObject= 0;
     static bool NoObject = 0;
-    static int IsFree = 0;
+    static unsigned long drive_free_start_time = millis();
     // Serial1.println("RUNNING");
 
     
@@ -259,28 +267,31 @@ void loop()
       NoObject = Turn_Until_Free();
       if (NoObject == true)
       {
+        drive_free_start_time = millis();
         phase = DRIVEFREE;
+        
         //go into the drive until free case
       }
       break;
     case DRIVEFREE:
-      IsFree = Drive_Until_Free();
-      //if it finishes driving free
-      if(IsFree == 1)
-      {
-        stop();
-        // phase = SEARCHING;
-        while(1)
-        {
 
-        }
-      } 
-      //if it encounters another obstacle
-      else if (IsFree == 2)
+      Serial1.println(millis() - drive_free_start_time);
+      if (millis() - drive_free_start_time > 500)
       {
+        // phase = SEARCHING;
         stop();
-        phase = AVOID;
       }
+      else 
+      {
+        NoObject = Drive_Until_Free();
+        //if it finishes driving free
+        if(NoObject == false)
+        {
+          stop();
+          phase = AVOID;
+        } 
+      }
+
       break;
     // case 2: //execute fire
     //   start_fan();
@@ -322,8 +333,8 @@ void loop()
 
     default:
       break;
-    Serial1.println(phase);
     }
+    Serial1.println(phase);
 
     break;
 
