@@ -227,6 +227,22 @@ void loop()
     int execute_time_count = 0;
     int loop_number = 0;
     // Serial1.println("RUNNING");
+
+    while(1)
+    {
+      sonar_reading = HC_SR04_range();
+      IR_read_filter();
+
+      Serial1.print(">Right IR: ");
+  Serial1.println(IR_right_avg);
+  delay(1);
+  Serial1.print(">Left IR: ");
+  Serial1.println(IR_left_avg);
+  delay(1);
+  Serial1.print(">Sonar: "),
+  Serial1.println(sonar_reading);
+  delay(1);
+    }
     
     switch (movement_phase)
     {

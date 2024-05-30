@@ -180,11 +180,11 @@ bool FireHoming_Avoidence()
   double left_IR_dis = (IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02")+IR_sensorReadDistance("41_02"))/3;
   double right_IR_dis = (IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03")+IR_sensorReadDistance("41_03"))/3;
   double sonar_dis = (HC_SR04_range()+HC_SR04_range()+HC_SR04_range())/3;
-  if((sonar_dis < 17) || (left_IR_dis < 200) || (right_IR_dis < 130))
+  if((sonar_dis < 20) || (left_IR_dis < 200) || (right_IR_dis < 130))
   {
     
     PhotoTransistor_Read();
-    if(lr_mid_avg > 4)
+    if(lr_mid_avg > 3.8)
     {
       stop();
       found_fire = true;
@@ -207,9 +207,16 @@ bool FireHoming_Avoidence()
       // stop();
       // delay(2000);
       
-      ObjectAvoidence();
+      // ObjectAvoidence();
       // stop();
       // delay(2000);
+
+      Turn_Until_Free();
+
+      while(1)
+      {
+        delay(1);
+      }
     }
         
   }
@@ -238,8 +245,8 @@ bool FireHoming_Avoidence()
     left_rear_motor.writeMicroseconds(1500 + motor_speeds[1]);
     right_rear_motor.writeMicroseconds(1500 + motor_speeds[2]);
     right_font_motor.writeMicroseconds(1500 + motor_speeds[3]);
-    Serial1.print(">Error: ");
-    Serial1.println(error_kp);
+    // Serial1.print(">Error: ");
+    // Serial1.println(error_kp);
 
 
   }

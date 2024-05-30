@@ -72,22 +72,20 @@ void Keep_Gyro_Zero()
 int Turn_Until_Free()
 {
     int turn_time_count = 0;
+    Serial1.println("Avoiding!");
 
-    float sonar_distance = HC_SR04_range();
-    if (sonar_distance < 10)
+    sonar_reading = HC_SR04_range();
+    if (sonar_reading < 10)
     {
-        while(sonar_distance < 10)
+        while(sonar_reading < 10)
         {
+            Serial1.println("Sonar Turn");
             ccw_low();
-            sonar_distance = HC_SR04_range();
+            sonar_reading = HC_SR04_range();
             delay(50);
             manual_gyro_count++;
             turn_time_count++; 
         }   
-        stop();
-
-        ccw_low();
-        delay(300);
         stop();
         manual_gyro_count = manual_gyro_count + 6;
     }
@@ -97,7 +95,8 @@ int Turn_Until_Free()
     if (IR_right_avg < 100)
     {
         while(IR_right_avg < 100)
-        {
+        {   
+            Serial1.println("IR_right_Turn");
             ccw_low();
             IR_read_filter();
             manual_gyro_count++;
@@ -108,7 +107,8 @@ int Turn_Until_Free()
     else
     {
         while(IR_left_avg < 200)
-        {
+        {   
+            Serial1.println("Ir_left_turn");
             cw_low();
             IR_read_filter();
             manual_gyro_count--;
