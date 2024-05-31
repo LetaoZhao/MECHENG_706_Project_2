@@ -65,7 +65,7 @@ enum MOVEMENT_PHASE
   REFINESEARCH = 8
 };
 
-MOVEMENT_PHASE phase = HOMING;
+MOVEMENT_PHASE phase = SEARCHING;
 
 
 
@@ -309,10 +309,6 @@ void loop()
     }
       break;
     case DRIVEFREE:
-        while(1)
-        {
-          delay(10);
-        }
       Serial1.println(millis() - drive_free_start_time);
       if (millis() - drive_free_start_time > 800)
       {
@@ -352,6 +348,14 @@ void loop()
       break;
 
       case EXTUINGUISH:
+        while(HC_SR04_range() > 10)
+        {
+          reverse();
+        }
+
+        forward();
+        delay(25);
+        stop();
         if (Execute_Fire() == true)
         {
           //reverse away from fire

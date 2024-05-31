@@ -59,7 +59,7 @@ bool Execute_Fire()
     PhotoTransistor_Read();
     int execute_time_count = 0;
     static bool extuinguish_timeout = false;
-    while(lr_mid_avg > 0.3 && extuinguish_timeout == false) 
+    while(lr_top_avg > 0.7 && extuinguish_timeout == false) 
     {
       //while not executed, keep doing that
       execute_time_count++;

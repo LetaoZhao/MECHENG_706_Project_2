@@ -98,7 +98,7 @@ bool Turn_Until_Free()
     }
 
     //check if clear of object
-    if((IR_left_avg > 300) && (IR_right_avg > 300) && (sonar_reading > 15) && (IR_left_45_avg > 200) && (IR_left_45_avg > 200))
+    if((IR_left_avg > 100) && (IR_right_avg > 100) && (sonar_reading > 15) && (IR_left_45_avg > 120) && (IR_left_45_avg > 120))
     {
         stop();
         return true;
@@ -163,22 +163,24 @@ bool Drive_Until_Free()
     sonar_reading = HC_SR04_range();
     IR_read_filter();
 
-
-
-    // check for objects
-    if((sonar_reading > 15) && (IR_left_avg> 300) && (IR_right_avg > 300) && (IR_right_45_avg > 200) && (IR_left_45_avg > 200))
+    if((sonar_reading < 15) || (IR_left_avg < 120) || (IR_right_avg < 120) || (IR_left_45_avg < 100) || (IR_right_45_avg < 100))
+  {
+    //STOP IMMEDIATELY
+    //should checkfire
+    stop();
+    forward();
+    delay(50);
+    stop();
+    for(int i = 0; i < length_filter; i++)
     {
-
-        reverse();
-
+      IR_read_filter();
     }
-    else
-    {
-
-        stop(); 
-        //there is an object
-        return false;
-    }
+    return false;   
+  }
+  else
+  {
+    reverse();
+  } 
     return true;
 }
 
