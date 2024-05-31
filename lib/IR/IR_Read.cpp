@@ -275,13 +275,13 @@ double IR_read_filter()
     // if (ir_right_reading_temp - IR_values_right[0] > 100 || IR_values_right[0] - ir_right_reading_temp > 100) {ir_right_reading_temp = IR_values_right[0];}
 
 
-    IR_sum_left = IR_sum_left - IR_values_left[29]; //remove the last value of the array from the sum total
-    IR_sum_right = IR_sum_right - IR_values_right[29]; //remove the last value of the array from the sum total
-    IR_sum_left_45 = IR_sum_left_45 - IR_values_left_45[29];
-    IR_sum_right_45 = IR_sum_right_45 - IR_values_right_45[29];
+    IR_sum_left = IR_sum_left - IR_values_left[length_filter-1]; //remove the last value of the array from the sum total
+    IR_sum_right = IR_sum_right - IR_values_right[length_filter-1]; //remove the last value of the array from the sum total
+    IR_sum_left_45 = IR_sum_left_45 - IR_values_left_45[length_filter-1];
+    IR_sum_right_45 = IR_sum_right_45 - IR_values_right_45[length_filter-1];
 
     //right shift the array
-    for (int i = 29; i >= 1; i--)
+    for (int i = length_filter-1; i >= 1; i--)
     { 
     IR_values_left[i] = IR_values_left[i-1];
     IR_values_right[i] = IR_values_right[i-1];
@@ -302,10 +302,10 @@ double IR_read_filter()
     IR_sum_right_45 += IR_values_right_45[0];
 
     //Calculate teh average
-    IR_left_avg = IR_sum_left/30;
-    IR_right_avg = IR_sum_right/30;
-    IR_left_45_avg = IR_sum_left_45/30;
-    IR_right_45_avg = IR_sum_right_45/30;
+    IR_left_avg = IR_sum_left/(length_filter-1);
+    IR_right_avg = IR_sum_right/(length_filter-1);
+    IR_left_45_avg = IR_sum_left_45/(length_filter-1);
+    IR_right_45_avg = IR_sum_right_45/(length_filter-1);
 
 }
 
@@ -317,9 +317,14 @@ void IR_filter_initialize()
     float ir_left_45_reading_temp = IR_sensorReadDistance("2Y_04");
     float ir_right_45_reading_temp = IR_sensorReadDistance("2Y_02");
 
+    IR_sum_left = 0;
+    IR_sum_left_45 = 0;
+    IR_sum_right = 0;
+    IR_sum_right_45 = 0;
+
 
     // fills the filter array with values
-  for(int i = 0; i < 30; i++)
+  for(int i = 0; i < length_filter; i++)
   {
     //get a reading
     ir_left_reading_temp = IR_sensorReadDistance("41_02");
@@ -343,8 +348,8 @@ void IR_filter_initialize()
     IR_sum_right_45 += IR_values_right_45[i];
   }
 
-  IR_left_avg =IR_sum_left/30;
-  IR_right_avg = IR_sum_right/30;
-  IR_left_45_avg = IR_sum_left_45/30;
-  IR_right_45_avg = IR_sum_right_45/30;
+  IR_left_avg =IR_sum_left/length_filter;
+  IR_right_avg = IR_sum_right/length_filter;
+  IR_left_45_avg = IR_sum_left_45/length_filter;
+  IR_right_45_avg = IR_sum_right_45/length_filter;
 }

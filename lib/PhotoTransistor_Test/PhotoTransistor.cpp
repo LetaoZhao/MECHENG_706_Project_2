@@ -193,14 +193,21 @@ bool FireHoming_Avoidence()
 {
   static float error = 0;
   static float error_kp;
-  static float kp = 150;
+  static float kp = 50;
   IR_read_filter();
   sonar_reading = HC_SR04_range();
-  if((sonar_reading < 15) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_left_45_avg < 160) || (IR_right_45_avg < 160))
+  if((sonar_reading < 15) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_left_45_avg < 200) || (IR_right_45_avg < 200))
   {
     //STOP IMMEDIATELY
     //should checkfire
     stop();
+    forward();
+    delay(50);
+    stop();
+    for(int i = 0; i < length_filter; i++)
+    {
+      IR_read_filter();
+    }
     return true;    
     //check if the fire is found later
 

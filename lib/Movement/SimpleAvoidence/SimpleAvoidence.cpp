@@ -98,7 +98,7 @@ bool Turn_Until_Free()
     }
 
     //check if clear of object
-    if((IR_left_avg > 300) && (IR_right_avg > 300) && (sonar_reading > 15) && (IR_left_45_avg > 100) && (IR_left_45_avg > 100))
+    if((IR_left_avg > 300) && (IR_right_avg > 300) && (sonar_reading > 15) && (IR_left_45_avg > 200) && (IR_left_45_avg > 200))
     {
         stop();
         return true;
@@ -166,7 +166,7 @@ bool Drive_Until_Free()
 
 
     // check for objects
-    if((sonar_reading > 15) && (IR_left_avg> 300) && (IR_right_avg > 300))
+    if((sonar_reading > 15) && (IR_left_avg> 300) && (IR_right_avg > 300) && (IR_right_45_avg > 200) && (IR_left_45_avg > 200))
     {
 
         reverse();

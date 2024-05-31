@@ -121,3 +121,5 @@ extern int manual_gyro_count;
 extern int manual_gyro_offset;
 
 extern int fires_extuiguished;
+
+extern int length_filter;

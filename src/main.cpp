@@ -65,7 +65,7 @@ enum MOVEMENT_PHASE
   REFINESEARCH = 8
 };
 
-MOVEMENT_PHASE phase = SEARCHING;
+MOVEMENT_PHASE phase = HOMING;
 
 
 
@@ -262,6 +262,7 @@ void loop()
       // Serial1.println(movement_phase);
       // PhotoTransistor_Read();
       if(TurnToFire() == true){
+        // IR_filter_initialize();
         phase = HOMING;
 
         // while(1)
@@ -285,6 +286,7 @@ void loop()
         phase = CHECKFIRE;
       }
       break;
+
     case AVOID:
     //time out the avoidance after 5 seconds
     if(millis() - avoidance_start_time > 5000)
@@ -299,6 +301,7 @@ void loop()
       if (NoObject == true)
       {
         drive_free_start_time = millis();
+        // IR_filter_initialize();
         phase = DRIVEFREE;
         
         //go into the drive until free case
@@ -306,7 +309,10 @@ void loop()
     }
       break;
     case DRIVEFREE:
-
+        while(1)
+        {
+          delay(10);
+        }
       Serial1.println(millis() - drive_free_start_time);
       if (millis() - drive_free_start_time > 800)
       {
@@ -329,7 +335,6 @@ void loop()
       break;
       case CHECKFIRE:
         //Read 20 times
-        delay(2000);
         for (int i = 0; i < 20; i++)
         {        
           PhotoTransistor_Read();
@@ -368,17 +373,6 @@ void loop()
       case DONOTHING:
         delay(10);
       break;
-
-      case REFINESEARCH:
-      if(TurnToFire() == true)
-      {
-
-        delay(300);
-
-        phase = HOMING;
-      }
-      break;
-
 
         
     // case 2: //execute fire
