@@ -39,7 +39,7 @@ Servo right_font_motor; // create servo object to control Vex Motor Controller 2
 Servo turret_motor;
 
 // Speed and motor movement
-int speed_val = 300;
+int speed_val = 500;
 int speed_change;
 int speed_val_low = 150;
 

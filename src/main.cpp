@@ -276,14 +276,7 @@ void loop()
       break;
 
     case HOMING: //go to fire
-    if((sonar_reading < 20) || (IR_left_avg < 300) || (IR_right_avg < 300) || (IR_right_45_avg < 300) || (IR_left_45_avg < 300))
-    {
-          stop();
-          avoidance_start_time = millis();
-          phase = AVOID;   
-    }
-    else
-    {
+    
       FireHomingObject = FireHoming_Avoidence();
       if (FireHomingObject == true)
       {
@@ -291,7 +284,6 @@ void loop()
         //current just avoids
         phase = CHECKFIRE;
       }
-    }
       break;
     case AVOID:
     //time out the avoidance after 5 seconds
@@ -330,15 +322,20 @@ void loop()
         {
           stop();
           avoidance_start_time = millis();
-          phase = AVOID;
+          phase = CHECKFIRE;
         } 
       }
 
       break;
       case CHECKFIRE:
-        PhotoTransistor_Read();
+        //Read 20 times
+        delay(2000);
+        for (int i = 0; i < 20; i++)
+        {        
+          PhotoTransistor_Read();
+        }
         sonar_reading = HC_SR04_range();
-        if ((lr_top_avg > 2))
+        if ((lr_top_avg > 0.7))
         {
           phase = EXTUINGUISH;
         }
@@ -364,7 +361,7 @@ void loop()
           if (fires_extuiguished == 2)
           {
           phase = DONOTHING;
-        }
+          }
         }
       break;
 
