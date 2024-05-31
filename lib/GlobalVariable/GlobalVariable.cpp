@@ -148,3 +148,5 @@ int manual_gyro_offset = 0;
 int fires_extuiguished = 0;
 
 int length_filter = 10;
+
+int homing_timeout = 0;

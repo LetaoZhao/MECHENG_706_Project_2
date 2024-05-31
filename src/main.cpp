@@ -263,6 +263,7 @@ void loop()
       // PhotoTransistor_Read();
       if(TurnToFire() == true){
         // IR_filter_initialize();
+        homing_timeout = 0;
         phase = HOMING;
 
         // while(1)
@@ -279,12 +280,19 @@ void loop()
     case HOMING: //go to fire
     
       FireHomingObject = FireHoming_Avoidence();
-      if (FireHomingObject == true)
+      if (FireHomingObject == 1)
       {
         //check fire
         //current just avoids
         phase = CHECKFIRE;
       }
+      //timeout condition
+      else if (FireHomingObject == 2)
+      {
+        stop();
+        phase = SEARCHING;
+      }
+      
       break;
 
     case AVOID:

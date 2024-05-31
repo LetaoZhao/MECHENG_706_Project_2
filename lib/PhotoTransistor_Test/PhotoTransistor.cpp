@@ -189,11 +189,13 @@ bool FireHoming()
 }
 
 
-bool FireHoming_Avoidence()
+int FireHoming_Avoidence()
 {
   static float error = 0;
   static float error_kp;
   static float kp = 50;
+  error = lr_right_avg - lr_left_avg;
+
   IR_read_filter();
   sonar_reading = HC_SR04_range();
   if((sonar_reading < 15) || (IR_left_avg < 120) || (IR_right_avg < 120) || (IR_left_45_avg < 100) || (IR_right_45_avg < 100))
@@ -208,7 +210,7 @@ bool FireHoming_Avoidence()
     {
       IR_read_filter();
     }
-    return true;    
+    return 1;    
     //check if the fire is found later
 
     
@@ -233,7 +235,16 @@ bool FireHoming_Avoidence()
       // delay(2000)
         
   }
-  else
+  //check for weak signal
+  else if ((lr_left_avg < 0.6) & (lr_right_avg < 0.6))
+  {
+    homing_timeout++;
+    delay(10);
+    if (homing_timeout > 100)
+    {
+      return 2;
+    }
+  }
   {
     PhotoTransistor_Read();
     //thresholds for transitioning
@@ -249,7 +260,6 @@ bool FireHoming_Avoidence()
     // }
 
     //calculate errors
-    error = lr_right_avg - lr_left_avg;
     error_kp = error * kp;
     //left front, left rear, right rear, right front
     float motor_speeds[4] = {-speed_val+error_kp,-speed_val+error_kp,speed_val+error_kp,speed_val+error_kp};
@@ -267,6 +277,6 @@ bool FireHoming_Avoidence()
   // Serial.println(lr_mid_avg);
   // Serial.println(lr_left_avg);
   // Serial.println(lr_right_avg);
-  return false;
+  return 0;
 }
 

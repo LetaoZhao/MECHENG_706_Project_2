@@ -123,3 +123,5 @@ extern int manual_gyro_offset;
 extern int fires_extuiguished;
 
 extern int length_filter;
+
+extern int homing_timeout;
